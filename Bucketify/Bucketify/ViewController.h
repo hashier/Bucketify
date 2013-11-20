@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "CocoaLibSpotify.h"
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController <SPSessionDelegate>
 
 @end
