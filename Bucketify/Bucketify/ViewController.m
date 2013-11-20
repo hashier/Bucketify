@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "common.h"
 
 #include "appkey.c"
 
@@ -52,7 +53,8 @@
     NSMutableDictionary *storedCredentials = [defaults valueForKey:@"SpotifyUsers"];
     
     if (storedCredentials == nil) {
-        [self showLogin];
+        // make sure that self.viewController is attached or placed in window hierarchy
+        [self performSelector:@selector(showLogin) withObject:nil afterDelay:0.0];
     } else {
         NSString *lastUser = [storedCredentials objectForKey:@"LastUser"] ;
         [[SPSession sharedSession] attemptLoginWithUserName:lastUser existingCredential:[storedCredentials objectForKey:lastUser]];
@@ -84,6 +86,60 @@
     [storedCredentials setValue:userName forKey:@"LastUser"];
     [defaults setValue:storedCredentials forKey:@"SpotifyUsers"];
     [defaults synchronize];
+}
+
+#pragma mark - SPSessionDelegate Methods
+
+-(UIViewController *)viewControllerToPresentLoginViewForSession:(SPSession *)aSession
+{
+    return self;
+}
+
+-(void)sessionDidLoginSuccessfully:(SPSession *)aSession
+{
+    DLog(@"Invoked by SPSession after a successful login.");
+}
+
+-(void)session:(SPSession *)aSession didFailToLoginWithError:(NSError *)error
+{
+    DLog(@"Invoked by SPSession after a failed login: %@", error);
+}
+
+-(void)sessionDidLogOut:(SPSession *)aSession
+{
+    [self login];
+}
+
+-(void)session:(SPSession *)aSession didEncounterNetworkError:(NSError *)error
+{
+    DLog(@"Network error: %@", error);
+}
+
+-(void)session:(SPSession *)aSession didLogMessage:(NSString *)aMessage
+{
+    DLog(@"Log-worthy: %@", aMessage);
+}
+
+-(void)sessionDidChangeMetadata:(SPSession *)aSession
+{
+    DLog(@"Called when metadata has been updated.");
+}
+
+-(void)session:(SPSession *)aSession recievedMessageForUser:(NSString *)aMessage
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message from Spotify"
+                                                    message:aMessage
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+}
+
+#pragma mark - SPLoginViewControllerDelegate Methods
+
+- (void)loginViewController:(SPLoginViewController *)controller didCompleteSuccessfully:(BOOL)didLogin
+{
+    DLog(@"Called when the login/signup process has completed. From SPLoginViewController");
 }
 
 @end

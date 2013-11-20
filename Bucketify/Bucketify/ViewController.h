@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 #import "CocoaLibSpotify.h"
 
-@interface ViewController : UIViewController <SPSessionDelegate>
+@interface ViewController : UIViewController <SPSessionDelegate, SPLoginViewControllerDelegate>
 
 @end
