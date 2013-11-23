@@ -73,6 +73,8 @@
     }
 }
 
+#pragma mark - SPSessionDelegate Methods
+
 - (void)session:(SPSession *)aSession didGenerateLoginCredentials:(NSString *)credential forUserName:(NSString *)userName
 {
     NSLog(@"storing credentials");
@@ -87,8 +89,6 @@
     [defaults setValue:storedCredentials forKey:@"SpotifyUsers"];
     [defaults synchronize];
 }
-
-#pragma mark - SPSessionDelegate Methods
 
 -(UIViewController *)viewControllerToPresentLoginViewForSession:(SPSession *)aSession
 {
