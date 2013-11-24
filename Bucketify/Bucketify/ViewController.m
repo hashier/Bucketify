@@ -107,7 +107,7 @@
 
 -(void)sessionDidLogOut:(SPSession *)aSession
 {
-    [self login];
+    [self performSelector:@selector(showLogin) withObject:nil afterDelay:0.0];
 }
 
 -(void)session:(SPSession *)aSession didEncounterNetworkError:(NSError *)error
