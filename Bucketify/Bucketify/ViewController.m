@@ -142,4 +142,41 @@
     DLog(@"Called when the login/signup process has completed. From SPLoginViewController");
 }
 
+#pragma mark - Buttons
+
+- (IBAction)doItButton:(id)sender
+{
+    [self getItemsFromStarredPlaylist];
+}
+
+- (void)getItemsFromStarredPlaylist
+{
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
+        
+        NSLog(@"%@", [SPSession sharedSession].starredPlaylist);
+        
+        for (SPPlaylistItem *aItem in [SPSession sharedSession].starredPlaylist.items) {
+            NSLog(@"%@", ((SPTrack *)aItem.item).name);
+
+            NSLog(@"%@", ((SPArtist *)[((SPTrack *)aItem.item).artists firstObject]).name);
+        }
+    }];
+    
+    SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
+    
+    [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
+        NSLog(@"%@", loadedContainers);
+        [container createPlaylistWithName:@"TEST2" callback:^(SPPlaylist *createdPlaylist) {
+            [SPAsyncLoading waitUntilLoaded:createdPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
+                NSLog(@"buh");
+                [SPTrack trackForTrackURL:[NSURL URLWithString:@"spotify:track:1zHlj4dQ8ZAtrayhuDDmkY"] inSession:[SPSession sharedSession] callback:^(SPTrack *track) {
+                    [[loadedPlaylist firstObject] addItem:track atIndex:0 callback:^(NSError *error) {
+                        NSLog(@"Well done");
+                    }];
+                }];
+            }];
+        }];
+    }];
+}
+
 @end
