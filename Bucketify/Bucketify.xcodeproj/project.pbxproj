@@ -24,7 +24,6 @@
 		00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6B18439C4500890D64 /* Base64Transcoder.c */; };
 		00503E7418439C4600890D64 /* ENAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6E18439C4500890D64 /* ENAPI.m */; };
 		00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E7118439C4500890D64 /* ENAPIRequest.m */; };
-		00BFB5B51842A44B00E354E1 /* EchoNestHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BFB5B41842A44B00E354E1 /* EchoNestHTTPClient.m */; };
 		5267851FA27C46D0AEB03841 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 743D12CB79C84A95BCA21E57 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -66,8 +65,6 @@
 		00503E7018439C4500890D64 /* ENAPIRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ENAPIRequest.h; sourceTree = "<group>"; };
 		00503E7118439C4500890D64 /* ENAPIRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ENAPIRequest.m; sourceTree = "<group>"; };
 		00503E7218439C4500890D64 /* ENLibrary-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ENLibrary-Prefix.pch"; sourceTree = "<group>"; };
-		00BFB5B31842A44B00E354E1 /* EchoNestHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EchoNestHTTPClient.h; path = Bucketify/EchoNestHTTPClient.h; sourceTree = "<group>"; };
-		00BFB5B41842A44B00E354E1 /* EchoNestHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EchoNestHTTPClient.m; path = Bucketify/EchoNestHTTPClient.m; sourceTree = "<group>"; };
 		00ECAC29183C51E4006D311F /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
 		743D12CB79C84A95BCA21E57 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9531CCEBAB3A45ED82150BE3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -133,7 +130,6 @@
 		004481CD18257318007AD1F4 /* Bucketify */ = {
 			isa = PBXGroup;
 			children = (
-				00BFB5B71842A47700E354E1 /* Classes */,
 				00BFB5B61842A45E00E354E1 /* VC */,
 				004481D918257318007AD1F4 /* Main.storyboard */,
 				004481DF18257318007AD1F4 /* Images.xcassets */,
@@ -205,16 +201,6 @@
 				004481DD18257318007AD1F4 /* ViewController.m */,
 			);
 			name = VC;
-			sourceTree = "<group>";
-		};
-		00BFB5B71842A47700E354E1 /* Classes */ = {
-			isa = PBXGroup;
-			children = (
-				00BFB5B31842A44B00E354E1 /* EchoNestHTTPClient.h */,
-				00BFB5B41842A44B00E354E1 /* EchoNestHTTPClient.m */,
-			);
-			name = Classes;
-			path = ..;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -355,7 +341,6 @@
 				00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */,
 				00503E7418439C4600890D64 /* ENAPI.m in Sources */,
 				00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */,
-				00BFB5B51842A44B00E354E1 /* EchoNestHTTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
