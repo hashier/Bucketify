@@ -21,6 +21,9 @@
 		004481E918257319007AD1F4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004481CB18257318007AD1F4 /* UIKit.framework */; };
 		004481F118257319007AD1F4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 004481EF18257319007AD1F4 /* InfoPlist.strings */; };
 		004481F318257319007AD1F4 /* BucketifyTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 004481F218257319007AD1F4 /* BucketifyTests.m */; };
+		00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6B18439C4500890D64 /* Base64Transcoder.c */; };
+		00503E7418439C4600890D64 /* ENAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6E18439C4500890D64 /* ENAPI.m */; };
+		00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E7118439C4500890D64 /* ENAPIRequest.m */; };
 		00BFB5B51842A44B00E354E1 /* EchoNestHTTPClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 00BFB5B41842A44B00E354E1 /* EchoNestHTTPClient.m */; };
 		5267851FA27C46D0AEB03841 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 743D12CB79C84A95BCA21E57 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -55,6 +58,14 @@
 		004481EE18257319007AD1F4 /* BucketifyTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BucketifyTests-Info.plist"; sourceTree = "<group>"; };
 		004481F018257319007AD1F4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		004481F218257319007AD1F4 /* BucketifyTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BucketifyTests.m; sourceTree = "<group>"; };
+		00503E6B18439C4500890D64 /* Base64Transcoder.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Base64Transcoder.c; sourceTree = "<group>"; };
+		00503E6C18439C4500890D64 /* Base64Transcoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Base64Transcoder.h; sourceTree = "<group>"; };
+		00503E6D18439C4500890D64 /* ENAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ENAPI.h; sourceTree = "<group>"; };
+		00503E6E18439C4500890D64 /* ENAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ENAPI.m; sourceTree = "<group>"; };
+		00503E6F18439C4500890D64 /* ENAPILibrary-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ENAPILibrary-Prefix.pch"; sourceTree = "<group>"; };
+		00503E7018439C4500890D64 /* ENAPIRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ENAPIRequest.h; sourceTree = "<group>"; };
+		00503E7118439C4500890D64 /* ENAPIRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ENAPIRequest.m; sourceTree = "<group>"; };
+		00503E7218439C4500890D64 /* ENLibrary-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ENLibrary-Prefix.pch"; sourceTree = "<group>"; };
 		00BFB5B31842A44B00E354E1 /* EchoNestHTTPClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EchoNestHTTPClient.h; path = Bucketify/EchoNestHTTPClient.h; sourceTree = "<group>"; };
 		00BFB5B41842A44B00E354E1 /* EchoNestHTTPClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EchoNestHTTPClient.m; path = Bucketify/EchoNestHTTPClient.m; sourceTree = "<group>"; };
 		00ECAC29183C51E4006D311F /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -134,6 +145,7 @@
 		004481CE18257318007AD1F4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				00503E6918439C4500890D64 /* ENAPILibrary */,
 				004481D618257318007AD1F4 /* AppDelegate.h */,
 				004481D718257318007AD1F4 /* AppDelegate.m */,
 				004481CF18257318007AD1F4 /* Bucketify-Info.plist */,
@@ -161,6 +173,29 @@
 				004481EF18257319007AD1F4 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		00503E6918439C4500890D64 /* ENAPILibrary */ = {
+			isa = PBXGroup;
+			children = (
+				00503E6A18439C4500890D64 /* Base64 */,
+				00503E6D18439C4500890D64 /* ENAPI.h */,
+				00503E6E18439C4500890D64 /* ENAPI.m */,
+				00503E6F18439C4500890D64 /* ENAPILibrary-Prefix.pch */,
+				00503E7018439C4500890D64 /* ENAPIRequest.h */,
+				00503E7118439C4500890D64 /* ENAPIRequest.m */,
+				00503E7218439C4500890D64 /* ENLibrary-Prefix.pch */,
+			);
+			path = ENAPILibrary;
+			sourceTree = "<group>";
+		};
+		00503E6A18439C4500890D64 /* Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				00503E6B18439C4500890D64 /* Base64Transcoder.c */,
+				00503E6C18439C4500890D64 /* Base64Transcoder.h */,
+			);
+			path = Base64;
 			sourceTree = "<group>";
 		};
 		00BFB5B61842A45E00E354E1 /* VC */ = {
@@ -317,6 +352,9 @@
 				004481DE18257318007AD1F4 /* ViewController.m in Sources */,
 				004481D818257318007AD1F4 /* AppDelegate.m in Sources */,
 				004481D418257318007AD1F4 /* main.m in Sources */,
+				00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */,
+				00503E7418439C4600890D64 /* ENAPI.m in Sources */,
+				00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */,
 				00BFB5B51842A44B00E354E1 /* EchoNestHTTPClient.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
