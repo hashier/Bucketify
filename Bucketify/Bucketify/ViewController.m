@@ -14,6 +14,8 @@
 
 @interface ViewController ()
 
+@property (strong, nonatomic) NSString *userList;
+
 @end
 
 @implementation ViewController
@@ -23,6 +25,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
     
+    // spotify
     NSError *error = nil;
     [SPSession initializeSharedSessionWithApplicationKey:[NSData dataWithBytes:&g_appkey length:g_appkey_size]
                                                userAgent:@"org.loessl.Bucketify-iOS"
@@ -34,12 +37,15 @@
         abort();
     }
     
+    // make sure that self.viewController is attached or placed in window hierarchy
+    [self performSelector:@selector(login) withObject:nil afterDelay:0.0];
+    
+    // echo nest
     [[SPSession sharedSession] setDelegate:self];
     
     [ENAPIRequest setApiKey:@"***REMOVED***"];
     
-    // make sure that self.viewController is attached or placed in window hierarchy
-    [self performSelector:@selector(login) withObject:nil afterDelay:0.0];
+    [self echoNestUserList];
 }
 
 - (void)didReceiveMemoryWarning
@@ -70,6 +76,7 @@
     controller.allowsCancel = NO;
     
     if (controller) {
+        if (controller == self.presentedViewController) return;
         [self presentViewController:controller animated:NO completion:nil];
     } else {
         NSLog(@"Login window can't be shown");
@@ -111,8 +118,6 @@
 
 -(void)sessionDidLogOut:(SPSession *)aSession
 {
-    if (self.presentedViewController != nil) return;
-    
     [self performSelector:@selector(showLogin) withObject:nil afterDelay:0.0];
 }
 
@@ -152,7 +157,7 @@
 
 - (IBAction)doItButton:(id)sender
 {
-
+    [self echoNestUpdate];
 }
 
 
@@ -169,10 +174,15 @@
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
                    for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
+                       NSLog(@"%@", request.response);
                        if ([[self lastUser] isEqualToString:aName[@"name"]]) {
-                           NSLog(@"%@", aName[@"id"]);
+                           self.userList = aName[@"id"];
+                           NSLog(@"UserList is: %@", self.userList);
+                           return;
                        }
                    }
+                   NSLog(@"UserList not found ):");
+                   self.userList = nil;
                }];
 }
 
@@ -193,7 +203,6 @@
                    for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
                        NSString *lastUser = [self lastUser];
                        if ([lastUser isEqualToString:aName[@"name"]]) {
-                           NSLog(@"%@", aName[@"id"]);
                            completionBlock(aName[@"id"]);
                        }
                    }
@@ -209,34 +218,33 @@
                }];
 }
 
-- (void)echoNestCreate
+- (void)echoNestCreateUserList
 {
-    NSString *catalogName = [self lastUser];
+    NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
     
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-    [parameters setValue:catalogName forKey:@"name"];
-    [parameters setValue:@"song" forKey:@"type"];
-    
-    [ENAPIRequest POSTWithEndpoint:@"catalog/create" andParameters:parameters andCompletionBlock:
-     ^(ENAPIRequest *request) {
-         NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
-         
-         NSLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
-                       NSIntToLong(request.httpResponseCode),
-                       NSIntToLong(request.echonestStatusCode),
-                       request.echonestStatusMessage,
-                       request.errorMessage,
-                       catalogId
-                       ]);
-     }];
+    [ENAPIRequest POSTWithEndpoint:@"catalog/create"
+                     andParameters:parameters
+                andCompletionBlock:^(ENAPIRequest *request) {
+                    NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
+                    self.userList = catalogId;
+                    
+                    NSLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
+                                  NSIntToLong(request.httpResponseCode),
+                                  NSIntToLong(request.echonestStatusCode),
+                                  request.echonestStatusMessage,
+                                  request.errorMessage,
+                                  catalogId
+                                  ]);
+                }];
 }
 
 - (void)echoNestDelete:(NSString *)catalogId
 {
-    NSMutableDictionary *parameters = [NSMutableDictionary new];
-    [parameters setValue:catalogId forKey:@"id"];
+    NSDictionary *parameters = @{@"id": catalogId};
     
-    [ENAPIRequest POSTWithEndpoint:@"catalog/delete" andParameters:parameters andCompletionBlock:
+    [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
+                     andParameters:parameters
+                andCompletionBlock:
      ^(ENAPIRequest *request) {
          NSLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
                        NSIntToLong(request.httpResponseCode),
@@ -246,6 +254,25 @@
                        catalogId
                        ]);
      }];
+}
+
+- (void)echoNestUpdate
+{
+//    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": @[@{@"item": @{@"artist_id": @"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf"}}]};
+
+    NSArray *test = @[@{@"item": @{@"artist_id": @"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf"}}];
+
+    NSString *string;
+    string = @"[{\"item\":{\"artist_id\":\"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf\"}}]";
+    string = [ENAPI encodeArrayAsJSON:test];
+
+    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": string};
+    
+    [ENAPIRequest POSTWithEndpoint:@"catalog/update"
+                     andParameters:parameters
+                andCompletionBlock:^(ENAPIRequest *request) {
+                    NSLog(@"Reqeust.response:\n%@", request.response);
+                }];
 }
 
 #pragma mark - Spotify
