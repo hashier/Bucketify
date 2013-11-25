@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "common.h"
+#import "ENAPI.h"
 
 #include "appkey.c"
 
@@ -34,6 +35,8 @@
     }
     
     [[SPSession sharedSession] setDelegate:self];
+    
+    [ENAPIRequest setApiKey:@"***REMOVED***"];
     
     // make sure that self.viewController is attached or placed in window hierarchy
     [self performSelector:@selector(login) withObject:nil afterDelay:0.0];
@@ -146,7 +149,56 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    [self getItemsFromStarredPlaylist];
+    [self echoNestList];
+}
+
+- (void)echoNestList
+{
+    [ENAPIRequest GETWithEndpoint:@"catalog/list"
+                    andParameters:nil
+               andCompletionBlock:^(ENAPIRequest *request) {
+                   NSLog(@"%@", request.response[@"response"][@"catalogs"]);
+               }];
+}
+
+- (void)echoNestCreate
+{
+    // TODO: change username to the spotify username
+    NSString *catalogName = @"username";
+    
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    [parameters setValue:catalogName forKey:@"name"];
+    [parameters setValue:@"song" forKey:@"type"];
+    
+    [ENAPIRequest POSTWithEndpoint:@"catalog/create" andParameters:parameters andCompletionBlock:
+     ^(ENAPIRequest *request) {
+         NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
+         
+         NSLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
+                       NSIntToLong(request.httpResponseCode),
+                       NSIntToLong(request.echonestStatusCode),
+                       request.echonestStatusMessage,
+                       request.errorMessage,
+                       catalogId
+                       ]);
+     }];
+}
+
+- (void)echoNestDelete:(NSString *)catalogId
+{
+    NSMutableDictionary *parameters = [NSMutableDictionary new];
+    [parameters setValue:catalogId forKey:@"id"];
+    
+    [ENAPIRequest POSTWithEndpoint:@"catalog/delete" andParameters:parameters andCompletionBlock:
+     ^(ENAPIRequest *request) {
+         NSLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
+                       NSIntToLong(request.httpResponseCode),
+                       NSIntToLong(request.echonestStatusCode),
+                       request.echonestStatusMessage,
+                       request.errorMessage,
+                       catalogId
+                       ]);
+     }];
 }
 
 - (void)getItemsFromStarredPlaylist
@@ -161,7 +213,10 @@
             NSLog(@"%@", ((SPArtist *)[((SPTrack *)aItem.item).artists firstObject]).name);
         }
     }];
-    
+}
+
+- (void)createPlaylistAndAddItem
+{
     SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
     
     [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
