@@ -23,7 +23,9 @@ curl "http://developer.echonest.com/api/v4/catalog/read?api_key=$KEY&format=json
 
 curl "http://developer.echonest.com/api/v4/catalog/read?api_key=$KEY&format=json&id=CAHODPE1418D73A06D&bucket=genre&bucket=terms&bucket=artist_location" | beautijson
 
+echo ---
 
+curl "http://developer.echonest.com/api/v4/song/profile?api_key=$KEY&format=json&track_id=spotify-WW:track:1mwt9hzaH7idmC5UCoOUkz&track_id=spotify-WW:track:1R2SZUOGJqqBiLuvwKOT2Y&track_id=spotify-WW:track:6t6oULCRS6hnI7rm0h5gwl" | beautijson
 
 curl -X POST \
 "http://developer.echonest.com/api/v4/catalog/update" \
