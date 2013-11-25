@@ -59,7 +59,7 @@
         // make sure that self.viewController is attached or placed in window hierarchy
         [self performSelector:@selector(showLogin) withObject:nil afterDelay:0.0];
     } else {
-        NSString *lastUser = [storedCredentials objectForKey:@"LastUser"] ;
+        NSString *lastUser = [storedCredentials objectForKey:@"LastUser"];
         [[SPSession sharedSession] attemptLoginWithUserName:lastUser existingCredential:[storedCredentials objectForKey:lastUser]];
     }
 }
@@ -81,6 +81,7 @@
 - (void)session:(SPSession *)aSession didGenerateLoginCredentials:(NSString *)credential forUserName:(NSString *)userName
 {
     NSLog(@"storing credentials");
+    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *storedCredentials = [[defaults valueForKey:@"SpotifyUsers"] mutableCopy];
     
@@ -110,6 +111,8 @@
 
 -(void)sessionDidLogOut:(SPSession *)aSession
 {
+    if (self.presentedViewController != nil) return;
+    
     [self performSelector:@selector(showLogin) withObject:nil afterDelay:0.0];
 }
 
@@ -149,10 +152,55 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    [self echoNestList];
+
 }
 
-- (void)echoNestList
+
+#pragma mark - EchoNest
+
+- (NSString *)lastUser
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:@"SpotifyUsers"][@"LastUser"];
+}
+
+- (void)echoNestUserList
+{
+    [ENAPIRequest GETWithEndpoint:@"catalog/list"
+                    andParameters:nil
+               andCompletionBlock:^(ENAPIRequest *request) {
+                   for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
+                       if ([[self lastUser] isEqualToString:aName[@"name"]]) {
+                           NSLog(@"%@", aName[@"id"]);
+                       }
+                   }
+               }];
+}
+
+- (void)echoNestUserListwithCompletionBlock:(void (^)(NSString *userList))completionBlock
+{
+    /* use with:
+    [self echoNestUserListwithCompletionBlock:^(NSString *userList) {
+        NSLog(@"%@", userList);
+    }];
+     */
+    
+    if(!completionBlock)
+        return; // Avoid crashs
+    
+    [ENAPIRequest GETWithEndpoint:@"catalog/list"
+                    andParameters:nil
+               andCompletionBlock:^(ENAPIRequest *request) {
+                   for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
+                       NSString *lastUser = [self lastUser];
+                       if ([lastUser isEqualToString:aName[@"name"]]) {
+                           NSLog(@"%@", aName[@"id"]);
+                           completionBlock(aName[@"id"]);
+                       }
+                   }
+               }];
+}
+
+- (void)echoNestLists
 {
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
@@ -163,8 +211,7 @@
 
 - (void)echoNestCreate
 {
-    // TODO: change username to the spotify username
-    NSString *catalogName = @"username";
+    NSString *catalogName = [self lastUser];
     
     NSMutableDictionary *parameters = [NSMutableDictionary new];
     [parameters setValue:catalogName forKey:@"name"];
@@ -200,6 +247,8 @@
                        ]);
      }];
 }
+
+#pragma mark - Spotify
 
 - (void)getItemsFromStarredPlaylist
 {
