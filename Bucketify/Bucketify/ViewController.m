@@ -300,27 +300,39 @@
                 continue;
             }
             
-            /*
-            for (aArtist in aTrack.artists) {
+            // stupid stupid echonest stuff....
+            if (1) {
+                // only the first artist
+                aArtist = [aTrack.artists firstObject];
                 [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
+            } else {
+                // all artists
+                for (aArtist in aTrack.artists) {
+                    [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
+                }
             }
-             */
-            aArtist = [aTrack.artists firstObject];
-            [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
             
-            if (i == 25) {
+            if (i % 25 == 0) {
                 DLog(@"Sending: %d", i);
-                DLog(@"%@", allSongs);
-                [self echoNestUpdateWithData:allSongs];
+                
+                //DLog(@"%@", allSongs);
+                DLog(@"Count 1: %lu", NSUIntToLong([allSongs count]));
+                NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allSongs] allObjects]];
+                DLog(@"Count 2: %lu", NSUIntToLong([returnArray count]));
+                
+                [self echoNestUpdateWithData:returnArray];
                 allSongs = [[NSMutableArray alloc] init];
             }
         }
-        /*
-        DLog(@"%@", allSongs);
+        DLog(@"Sending: %d", i);
+        
+        //DLog(@"%@", allSongs);
         DLog(@"Count 1: %lu", NSUIntToLong([allSongs count]));
         NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allSongs] allObjects]];
-        DLog(@"Count 1: %lu", NSUIntToLong([returnArray count]));
-         */
+        DLog(@"Count 2: %lu", NSUIntToLong([returnArray count]));
+        
+        [self echoNestUpdateWithData:returnArray];
+        allSongs = [[NSMutableArray alloc] init];
     }];
 }
 
