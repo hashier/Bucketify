@@ -199,16 +199,20 @@
     if(!completionBlock)
         return; // Avoid crashs
     
-    [ENAPIRequest GETWithEndpoint:@"catalog/list"
-                    andParameters:nil
-               andCompletionBlock:^(ENAPIRequest *request) {
-                   for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
-                       NSString *lastUser = [self lastUser];
-                       if ([lastUser isEqualToString:aName[@"name"]]) {
-                           completionBlock(aName[@"id"]);
+    if (self.userList) {
+        completionBlock(self.userList);
+    } else {
+        [ENAPIRequest GETWithEndpoint:@"catalog/list"
+                        andParameters:nil
+                   andCompletionBlock:^(ENAPIRequest *request) {
+                       for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
+                           NSString *lastUser = [self lastUser];
+                           if ([lastUser isEqualToString:aName[@"name"]]) {
+                               completionBlock(aName[@"id"]);
+                           }
                        }
-                   }
-               }];
+                   }];
+    }
 }
 
 - (void)echoNestLists
@@ -227,6 +231,18 @@
     [ENAPIRequest POSTWithEndpoint:@"catalog/create"
                      andParameters:parameters
                 andCompletionBlock:^(ENAPIRequest *request) {
+                    // TODO: Check if catalog already exist
+                    /*
+                    {
+                        "response": {
+                            "status": {
+                                "code": 5,
+                                "message": "A catalog with this name is already owned by this API Key: CAVXBQN1429442B82E",
+                                "version": "4.2"
+                            }
+                        }
+                    }
+                     */
                     NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
                     self.userList = catalogId;
                     
@@ -256,6 +272,7 @@
                        catalogId
                        ]);
      }];
+    self.userList = nil;
 }
 
 - (void)echoNestUpdateWithData:(NSArray *)data
