@@ -330,7 +330,7 @@
             }
                 for (aArtist in aTrack.artists) {
                     url = [self spotifyString:[aArtist.spotifyURL absoluteString]];
-                    [allSongs addObject:@{@"item": @{@"item_id": url, @"artist_id": url}}];
+                    [allSongs addObject:@{@"item": @{@"item_id": [url stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": url}}];
                 }
             i++;
         }
