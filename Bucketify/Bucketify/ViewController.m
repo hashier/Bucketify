@@ -165,6 +165,9 @@
 
 #pragma mark - EchoNest
 
+// TODO: /status function
+// TODO: read data back again
+
 - (NSString *)lastUser
 {
     return [[NSUserDefaults standardUserDefaults] valueForKey:@"SpotifyUsers"][@"LastUser"];
@@ -185,6 +188,7 @@
                    }
                    DLog(@"UserList not found ):");
                    self.userList = nil;
+                   // TODO: Create user list here!
                }];
 }
 
@@ -235,9 +239,24 @@
                     /*
                     {
                         "response": {
+                            "id": "CAQTWCW142969B6A64",
+                            "name": "hasspot",
+                            "status": {
+                                "code": 0,
+                                "message": "Success",
+                                "version": "4.2"
+                            },
+                            "type": "artist"
+                        }
+                    }
+                     */
+                    
+                    /*
+                    {
+                        "response": {
                             "status": {
                                 "code": 5,
-                                "message": "A catalog with this name is already owned by this API Key: CAVXBQN1429442B82E",
+                                "message": "A catalog with this name is already owned by this API Key: CAQTWCW142969B6A64",
                                 "version": "4.2"
                             }
                         }
