@@ -277,14 +277,8 @@
 
 - (void)echoNestUpdateWithData:(NSArray *)data
 {
-//    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": @[@{@"item": @{@"artist_id": @"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf"}}]};
-
-    NSArray *test = @[@{@"item": @{@"artist_id": @"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf"}}];
-//    DLog(@"%@", test);
-    NSString *string;
-    string = @"[{\"item\":{\"artist_id\":\"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf\"}}]";
-    string = [ENAPI encodeArrayAsJSON:test];
-
+    // TODO: Take care if userList is empty
+    
     NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/update"
@@ -302,11 +296,11 @@
         
         DLog(@"%@", [SPSession sharedSession].starredPlaylist);
  
-        // TODO: fix the capacity
         NSMutableArray *allSongs = [[NSMutableArray alloc] init];
-        SPTrack *aTrack;
         SPPlaylistItem *aItem;
+        SPTrack *aTrack;
         SPArtist *aArtist;
+        NSString *url;
         int i = 1;
         for (aItem in [SPSession sharedSession].starredPlaylist.items) {
             aTrack = ((SPTrack *)aItem.item);
@@ -315,41 +309,18 @@
                 DLog(@"Error: Track is nil");
                 continue;
             }
-            
-            // stupid stupid echonest stuff....
-            if (1) {
-                // only the first artist
-                aArtist = [aTrack.artists firstObject];
-                [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
-            } else {
-                // all artists
                 for (aArtist in aTrack.artists) {
-                    [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
+                    url = [self spotifyString:[aArtist.spotifyURL absoluteString]];
+                    [allSongs addObject:@{@"item": @{@"item_id": url, @"artist_id": url}}];
                 }
-            }
-            
-            if (i % 10 == 0) {
-                DLog(@"Sending: %d", i);
-                
-                //DLog(@"%@", allSongs);
-                DLog(@"Count 1: %lu", NSUIntToLong([allSongs count]));
-                NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allSongs] allObjects]];
-                DLog(@"Count 2: %lu", NSUIntToLong([returnArray count]));
-                
-                [self echoNestUpdateWithData:returnArray];
-                allSongs = [[NSMutableArray alloc] init];
-            }
             i++;
         }
-        DLog(@"Sending: %d", i);
-        
-        //DLog(@"%@", allSongs);
-        DLog(@"Count 1: %lu", NSUIntToLong([allSongs count]));
+//        DLog(@"%@", allSongs);
+        DLog(@"Total tracks added to data : %d", i);
+        DLog(@"Total number of artists    : %lu", NSUIntToLong([allSongs count]));
         NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allSongs] allObjects]];
-        DLog(@"Count 2: %lu", NSUIntToLong([returnArray count]));
-        
+        DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
         [self echoNestUpdateWithData:returnArray];
-        allSongs = [[NSMutableArray alloc] init];
     }];
 }
 
