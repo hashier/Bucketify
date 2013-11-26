@@ -33,7 +33,7 @@
                                                    error:&error];
     
     if (error != nil) {
-        NSLog(@"CocoaLibSpotify init failed: %@", error);
+        DLog(@"CocoaLibSpotify init failed: %@", error);
         abort();
     }
     
@@ -79,7 +79,7 @@
         if (controller == self.presentedViewController) return;
         [self presentViewController:controller animated:NO completion:nil];
     } else {
-        NSLog(@"Login window can't be shown");
+        DLog(@"Login window can't be shown");
     }
 }
 
@@ -87,7 +87,7 @@
 
 - (void)session:(SPSession *)aSession didGenerateLoginCredentials:(NSString *)credential forUserName:(NSString *)userName
 {
-    NSLog(@"storing credentials");
+    DLog(@"storing credentials");
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSMutableDictionary *storedCredentials = [[defaults valueForKey:@"SpotifyUsers"] mutableCopy];
@@ -157,7 +157,9 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    [self echoNestUpdate];
+    [self buildArrayItemsFromStarredPlaylist];
+//    [self buildArrayItemsFromStarredPlaylist];
+//    [self dumpItemsFromStarredPlaylist];
 }
 
 
@@ -174,14 +176,14 @@
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
                    for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
-                       NSLog(@"%@", request.response);
+                       DLog(@"%@", request.response);
                        if ([[self lastUser] isEqualToString:aName[@"name"]]) {
                            self.userList = aName[@"id"];
-                           NSLog(@"UserList is: %@", self.userList);
+                           DLog(@"UserList is: %@", self.userList);
                            return;
                        }
                    }
-                   NSLog(@"UserList not found ):");
+                   DLog(@"UserList not found ):");
                    self.userList = nil;
                }];
 }
@@ -190,7 +192,7 @@
 {
     /* use with:
     [self echoNestUserListwithCompletionBlock:^(NSString *userList) {
-        NSLog(@"%@", userList);
+        DLog(@"%@", userList);
     }];
      */
     
@@ -214,7 +216,7 @@
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
-                   NSLog(@"%@", request.response[@"response"][@"catalogs"]);
+                   DLog(@"%@", request.response[@"response"][@"catalogs"]);
                }];
 }
 
@@ -228,7 +230,7 @@
                     NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
                     self.userList = catalogId;
                     
-                    NSLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
+                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
                                   NSIntToLong(request.httpResponseCode),
                                   NSIntToLong(request.echonestStatusCode),
                                   request.echonestStatusMessage,
@@ -246,7 +248,7 @@
                      andParameters:parameters
                 andCompletionBlock:
      ^(ENAPIRequest *request) {
-         NSLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
+         DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
                        NSIntToLong(request.httpResponseCode),
                        NSIntToLong(request.echonestStatusCode),
                        request.echonestStatusMessage,
@@ -256,58 +258,113 @@
      }];
 }
 
-- (void)echoNestUpdate
+- (void)echoNestUpdateWithData:(NSArray *)data
 {
 //    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": @[@{@"item": @{@"artist_id": @"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf"}}]};
 
     NSArray *test = @[@{@"item": @{@"artist_id": @"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf"}}];
-
+//    DLog(@"%@", test);
     NSString *string;
     string = @"[{\"item\":{\"artist_id\":\"spotify-WW:artist:4XkhEirR2JZT4fncyOxxtf\"}}]";
     string = [ENAPI encodeArrayAsJSON:test];
 
-    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": string};
+    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/update"
                      andParameters:parameters
                 andCompletionBlock:^(ENAPIRequest *request) {
-                    NSLog(@"Reqeust.response:\n%@", request.response);
+                    DLog(@"Reqeust.response:\n%@", request.response);
                 }];
 }
 
 #pragma mark - Spotify
 
-- (void)getItemsFromStarredPlaylist
+- (void)buildArrayItemsFromStarredPlaylist
 {
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedItems, NSArray *notLoadedItems) {
         
-        NSLog(@"%@", [SPSession sharedSession].starredPlaylist);
+        DLog(@"%@", [SPSession sharedSession].starredPlaylist);
+ 
+        // TODO: fix the capacity
+        NSMutableArray *allSongs = [[NSMutableArray alloc] initWithCapacity:1000];
+        SPTrack *aTrack;
+        SPPlaylistItem *aItem;
+        SPArtist *aArtist;
+        int i = 0;
+        for (aItem in [SPSession sharedSession].starredPlaylist.items) {
+            i++;
+            aTrack = ((SPTrack *)aItem.item);
+            
+            if (!aTrack.artists) {
+                DLog(@"Error: Track is nil");
+                continue;
+            }
+            
+            /*
+            for (aArtist in aTrack.artists) {
+                [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
+            }
+             */
+            aArtist = [aTrack.artists firstObject];
+            [allSongs addObject:@{@"item": @{@"artist_id": [self spotifyString:[aArtist.spotifyURL absoluteString]]}}];
+            
+            if (i == 25) {
+                DLog(@"Sending: %d", i);
+                DLog(@"%@", allSongs);
+                [self echoNestUpdateWithData:allSongs];
+                allSongs = [[NSMutableArray alloc] init];
+            }
+        }
+        /*
+        DLog(@"%@", allSongs);
+        DLog(@"Count 1: %lu", NSUIntToLong([allSongs count]));
+        NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allSongs] allObjects]];
+        DLog(@"Count 1: %lu", NSUIntToLong([returnArray count]));
+         */
+    }];
+}
+
+- (void)dumpItemsFromStarredPlaylist
+{
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedItems, NSArray *notLoadedItems) {
+        
+        DLog(@"starredPlaylist: %@", [SPSession sharedSession].starredPlaylist);
         
         for (SPPlaylistItem *aItem in [SPSession sharedSession].starredPlaylist.items) {
-            NSLog(@"%@", ((SPTrack *)aItem.item).name);
-
-            NSLog(@"%@", ((SPArtist *)[((SPTrack *)aItem.item).artists firstObject]).name);
+            DLog(@"%@ - %@", ((SPArtist *)[((SPTrack *)aItem.item).artists firstObject]).name, ((SPTrack *)aItem.item).name);
         }
     }];
 }
 
-- (void)createPlaylistAndAddItem
+- (void)createPlaylistAndAddItemDUMMY
 {
     SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
     
     [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
-        NSLog(@"%@", loadedContainers);
+        DLog(@"%@", loadedContainers);
         [container createPlaylistWithName:@"TEST2" callback:^(SPPlaylist *createdPlaylist) {
             [SPAsyncLoading waitUntilLoaded:createdPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
-                NSLog(@"buh");
+                DLog(@"buh");
                 [SPTrack trackForTrackURL:[NSURL URLWithString:@"spotify:track:1zHlj4dQ8ZAtrayhuDDmkY"] inSession:[SPSession sharedSession] callback:^(SPTrack *track) {
                     [[loadedPlaylist firstObject] addItem:track atIndex:0 callback:^(NSError *error) {
-                        NSLog(@"Well done");
+                        DLog(@"Well done");
                     }];
                 }];
             }];
         }];
     }];
+}
+
+#pragma mark - helper
+
+- (NSString *)spotifyString:(NSString *)string
+{
+    return [string stringByReplacingOccurrencesOfString:@"spotify" withString:@"spotify-WW"];
+}
+
+- (NSString *)unSpotifyString:(NSString *)string
+{
+    return [string stringByReplacingOccurrencesOfString:@"spotify-WW" withString:@"spotify"];
 }
 
 @end
