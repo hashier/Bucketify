@@ -286,13 +286,12 @@
         DLog(@"%@", [SPSession sharedSession].starredPlaylist);
  
         // TODO: fix the capacity
-        NSMutableArray *allSongs = [[NSMutableArray alloc] initWithCapacity:1000];
+        NSMutableArray *allSongs = [[NSMutableArray alloc] init];
         SPTrack *aTrack;
         SPPlaylistItem *aItem;
         SPArtist *aArtist;
-        int i = 0;
+        int i = 1;
         for (aItem in [SPSession sharedSession].starredPlaylist.items) {
-            i++;
             aTrack = ((SPTrack *)aItem.item);
             
             if (!aTrack.artists) {
@@ -312,7 +311,7 @@
                 }
             }
             
-            if (i % 25 == 0) {
+            if (i % 10 == 0) {
                 DLog(@"Sending: %d", i);
                 
                 //DLog(@"%@", allSongs);
@@ -323,6 +322,7 @@
                 [self echoNestUpdateWithData:returnArray];
                 allSongs = [[NSMutableArray alloc] init];
             }
+            i++;
         }
         DLog(@"Sending: %d", i);
         
