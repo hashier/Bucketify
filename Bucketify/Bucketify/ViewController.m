@@ -157,7 +157,8 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    [self buildArrayItemsFromStarredPlaylist];
+    [self echoNestCreateUserList];
+//    [self buildArrayItemsFromStarredPlaylist];
 //    [self buildArrayItemsFromStarredPlaylist];
 //    [self dumpItemsFromStarredPlaylist];
 }
@@ -174,7 +175,7 @@
 }
 
 - (void)echoNestUserList
-{    
+{
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
@@ -230,50 +231,38 @@
 
 - (void)echoNestCreateUserList
 {
-    // TODO: Check if catalog already exist
-    
     NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/create"
                      andParameters:parameters
                 andCompletionBlock:^(ENAPIRequest *request) {
-                    // TODO: Check if catalog already exist here
-                    /*
-                    {
-                        "response": {
-                            "id": "CAQTWCW142969B6A64",
-                            "name": "hasspot",
-                            "status": {
-                                "code": 0,
-                                "message": "Success",
-                                "version": "4.2"
-                            },
-                            "type": "artist"
-                        }
-                    }
-                     */
-                    
-                    /*
-                    {
-                        "response": {
-                            "status": {
-                                "code": 5,
-                                "message": "A catalog with this name is already owned by this API Key: CAQTWCW142969B6A64",
-                                "version": "4.2"
-                            }
-                        }
-                    }
-                     */
-                    NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
-                    self.userList = catalogId;
-                    
                     DLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
-                                  NSIntToLong(request.httpResponseCode),
-                                  NSIntToLong(request.echonestStatusCode),
-                                  request.echonestStatusMessage,
-                                  request.errorMessage,
-                                  catalogId
-                                  ]);
+                                 NSIntToLong(request.httpResponseCode),
+                                 NSIntToLong(request.echonestStatusCode),
+                                 request.echonestStatusMessage,
+                                 request.errorMessage,
+                                 (NSString  *)[request.response valueForKeyPath:@"response.id"]
+                                 ]);
+                    if (request.echonestStatusCode) {
+                        // userList existed, returning existing ID
+                        __block NSString *lastWord = nil;
+                        NSString *aString = request.echonestStatusMessage;
+                        
+                        [aString enumerateSubstringsInRange:NSMakeRange(0, [aString length])
+                                                    options:NSStringEnumerationByWords | NSStringEnumerationReverse
+                                                 usingBlock:^(NSString *substring, NSRange subrange, NSRange enclosingRange, BOOL *stop) {
+                                                     lastWord = substring;
+                                                     *stop = YES;
+                                                 }];
+                        
+                        DLog(@"userList: %@", lastWord);
+                        
+                        self.userList = lastWord;
+                    } else {
+                        // no userList existed, we just created a new one
+                        NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
+                        self.userList = catalogId;
+                    }
                 }];
 }
 
