@@ -174,9 +174,7 @@
 }
 
 - (void)echoNestUserList
-{
-    // TODO: Create userList if none is existing
-    
+{    
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
@@ -190,7 +188,7 @@
                    }
                    DLog(@"UserList not found ):");
                    self.userList = nil;
-                   // TODO: Create userList if none is existing here
+                   [self echoNestCreateUserList];
                }];
 }
 
