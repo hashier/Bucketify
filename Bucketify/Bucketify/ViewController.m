@@ -166,7 +166,7 @@
 #pragma mark - EchoNest
 
 // TODO: /status function
-// TODO: read data back again
+// TODO: read data back again function
 
 - (NSString *)lastUser
 {
@@ -175,6 +175,8 @@
 
 - (void)echoNestUserList
 {
+    // TODO: Create userList if none is existing
+    
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
@@ -188,7 +190,7 @@
                    }
                    DLog(@"UserList not found ):");
                    self.userList = nil;
-                   // TODO: Create user list here!
+                   // TODO: Create userList if none is existing here
                }];
 }
 
@@ -230,12 +232,14 @@
 
 - (void)echoNestCreateUserList
 {
+    // TODO: Check if catalog already exist
+    
     NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/create"
                      andParameters:parameters
                 andCompletionBlock:^(ENAPIRequest *request) {
-                    // TODO: Check if catalog already exist
+                    // TODO: Check if catalog already exist here
                     /*
                     {
                         "response": {
@@ -311,35 +315,50 @@
 
 - (void)buildArrayItemsFromStarredPlaylist
 {
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedItems, NSArray *notLoadedItems) {
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
         
-        DLog(@"%@", [SPSession sharedSession].starredPlaylist);
- 
-        NSMutableArray *allSongs = [[NSMutableArray alloc] init];
-        SPPlaylistItem *aItem;
-        SPTrack *aTrack;
-        SPArtist *aArtist;
-        NSString *url;
-        int i = 1;
-        for (aItem in [SPSession sharedSession].starredPlaylist.items) {
-            aTrack = ((SPTrack *)aItem.item);
+        DLog(@"Session loaded");
+        
+        [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
             
-            if (!aTrack.artists) {
-                DLog(@"Error: Track is nil");
-                continue;
-            }
-                for (aArtist in aTrack.artists) {
-                    url = [self spotifyString:[aArtist.spotifyURL absoluteString]];
-                    [allSongs addObject:@{@"item": @{@"item_id": [url stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": url}}];
+            DLog(@"Starred Playlist loaded: %@", [SPSession sharedSession].starredPlaylist);
+            
+            NSArray *playlistItems = [loadedPlaylists valueForKeyPath:@"@unionOfArrays.items"];
+            NSArray *tracks = [self tracksFromPlaylistItems:playlistItems];
+            
+            [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+                
+                DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
+
+                NSMutableArray *allArtists = [[NSMutableArray alloc] init];
+                SPTrack *anTrack;
+                SPArtist *aArtist;
+                NSString *aURL;
+                int i = 0;
+                int j = 0;
+                for (anTrack in tracks) {
+                    i++;
+                    if (!anTrack.artists) {
+                        DLog(@"Error: Track is nil");
+                        continue;
+                    }
+                    for (aArtist in anTrack.artists) {
+                        aURL = [self spotifyString:[aArtist.spotifyURL absoluteString]];
+                        [allArtists addObject:@{@"item": @{@"item_id": [aURL stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": aURL}}];
+                    }
+                    j++;
                 }
-            i++;
-        }
-//        DLog(@"%@", allSongs);
-        DLog(@"Total tracks added to data : %d", i);
-        DLog(@"Total number of artists    : %lu", NSUIntToLong([allSongs count]));
-        NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allSongs] allObjects]];
-        DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
-        [self echoNestUpdateWithData:returnArray];
+                
+                //        DLog(@"%@", allSongs);
+                DLog(@"Total items processed      : %d", i);
+                DLog(@"Total that were nil        : %d", i - j);
+                DLog(@"Total number of artists    : %lu", NSUIntToLong([allArtists count]));
+                NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
+                DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
+                
+                [self echoNestUpdateWithData:returnArray];
+            }];
+        }];
     }];
 }
 
@@ -384,6 +403,19 @@
 - (NSString *)unSpotifyString:(NSString *)string
 {
     return [string stringByReplacingOccurrencesOfString:@"spotify-WW" withString:@"spotify"];
+}
+
+-(NSArray *)tracksFromPlaylistItems:(NSArray *)items
+{
+    NSMutableArray *tracks = [NSMutableArray arrayWithCapacity:items.count];
+    
+    for (SPPlaylistItem *anItem in items) {
+        if (anItem.itemClass == [SPTrack class]) {
+            [tracks addObject:anItem.item];
+        }
+    }
+    
+    return [NSArray arrayWithArray:tracks];
 }
 
 @end
