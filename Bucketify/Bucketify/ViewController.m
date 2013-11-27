@@ -158,8 +158,13 @@
 
 - (IBAction)doItButton:(id)sender
 {
+    NSString *play = @"test88";
+    [self spotifyCreatePlaylist:play];
+    [self spotifyAddSong:@"spotify:track:1STjJ4su0G65hlXryuEh30" toPlaylist:play];
+    [self spotifyAddSong:@"spotify:track:6iqEd2PFZanx8qcynhfE9d" toPlaylist:play];
+//    [self spotifyDumpItemsFromStarredPlaylist];
 //    [self echoNestCreateUserTasteprofile];
-    [self buildArrayItemsFromStarredPlaylist];
+//    [self buildArrayItemsFromStarredPlaylist];
 //    [self dumpItemsFromStarredPlaylist];
 }
 
@@ -296,7 +301,7 @@
 
 #pragma mark - Spotify
 
-- (void)buildArrayItemsFromStarredPlaylist
+- (void)spotifyBuildArrayOfItemsFromStarredPlaylist
 {
     [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
         
@@ -345,30 +350,71 @@
     }];
 }
 
-- (void)dumpItemsFromStarredPlaylist
+- (void)spotifyDumpItemsFromStarredPlaylist
 {
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedItems, NSArray *notLoadedItems) {
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
         
-        DLog(@"starredPlaylist: %@", [SPSession sharedSession].starredPlaylist);
-        
-        for (SPPlaylistItem *aItem in [SPSession sharedSession].starredPlaylist.items) {
-            DLog(@"%@ - %@", ((SPArtist *)[((SPTrack *)aItem.item).artists firstObject]).name, ((SPTrack *)aItem.item).name);
-        }
+        [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedItems, NSArray *notLoadedItems) {
+            
+            DLog(@"starredPlaylist: %@", [SPSession sharedSession].starredPlaylist);
+            
+            NSArray *tracks = [self tracksFromPlaylistItems:[SPSession sharedSession].starredPlaylist.items];
+            
+            [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+                for (SPTrack *aTrack in tracks) {
+                    DLog(@"%@ - %@", [aTrack.artists description], aTrack.name);
+                }
+            }];
+        }];
     }];
 }
 
-- (void)createPlaylistAndAddItemDUMMY
+- (void)spotifyCreatePlaylist:(NSString *)playlistName
 {
-    SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
-    
-    [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
-        DLog(@"%@", loadedContainers);
-        [container createPlaylistWithName:@"TEST2" callback:^(SPPlaylist *createdPlaylist) {
-            [SPAsyncLoading waitUntilLoaded:createdPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
-                DLog(@"buh");
-                [SPTrack trackForTrackURL:[NSURL URLWithString:@"spotify:track:1zHlj4dQ8ZAtrayhuDDmkY"] inSession:[SPSession sharedSession] callback:^(SPTrack *track) {
-                    [[loadedPlaylist firstObject] addItem:track atIndex:0 callback:^(NSError *error) {
-                        DLog(@"Well done");
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
+        
+        SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
+        
+        [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
+            [container createPlaylistWithName:playlistName callback:^(SPPlaylist *createdPlaylist) {
+                DLog(@"Playlist: %@ created", playlistName);
+            }];
+        }];
+    }];
+}
+
+- (void)spotifyAddSong:(NSString *)song toPlaylist:(NSString *)playlistName
+{
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
+        
+        SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
+        
+        [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
+            NSMutableArray *playlists = [NSMutableArray array];
+			[playlists addObject:[SPSession sharedSession].starredPlaylist];
+			[playlists addObject:[SPSession sharedSession].inboxPlaylist];
+			[playlists addObjectsFromArray:[SPSession sharedSession].userPlaylists.flattenedPlaylists];
+            
+			[SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
+                SPPlaylist *addItemToThisPlaylist;
+                for (SPPlaylist *aPlaylist in loadedPlaylists) {
+                    if ([aPlaylist.name isEqualToString:playlistName]) {
+                        DLog(@"Found playlist with name %@", playlistName);
+                        addItemToThisPlaylist = aPlaylist;
+                    }
+                }
+                if (!addItemToThisPlaylist) {
+                    DLog(@"Coudn't find a playlist with the given name: %@", playlistName);
+                    return;
+                }
+                [SPTrack trackForTrackURL:[NSURL URLWithString:song] inSession:[SPSession sharedSession] callback:^(SPTrack *aTrack) {
+                    [addItemToThisPlaylist addItem:aTrack atIndex:0 callback:^(NSError *error) {
+                        if (error) {
+                            DLog(@"Couln't add track");
+                            DLog(@"%@", error);
+                        } else {
+                            DLog(@"Added track");
+                        }
                     }];
                 }];
             }];
