@@ -14,7 +14,8 @@
 
 @interface ViewController ()
 
-@property (strong, nonatomic) NSString *userList;
+@property (strong, nonatomic) NSString *userTasteprofile;
+@property (strong, nonatomic) NSString *userTicket;
 
 @end
 
@@ -45,7 +46,7 @@
     
     [ENAPIRequest setApiKey:@"***REMOVED***"];
     
-    [self echoNestUserList];
+    [self echoNestUserTasteprofile];
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,7 +55,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - login
+#pragma mark - Spotify login
 
 -(void)login
 {
@@ -157,9 +158,8 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    [self echoNestCreateUserList];
-//    [self buildArrayItemsFromStarredPlaylist];
-//    [self buildArrayItemsFromStarredPlaylist];
+//    [self echoNestCreateUserTasteprofile];
+    [self buildArrayItemsFromStarredPlaylist];
 //    [self dumpItemsFromStarredPlaylist];
 }
 
@@ -169,12 +169,7 @@
 // TODO: /status function
 // TODO: read data back again function
 
-- (NSString *)lastUser
-{
-    return [[NSUserDefaults standardUserDefaults] valueForKey:@"SpotifyUsers"][@"LastUser"];
-}
-
-- (void)echoNestUserList
+- (void)echoNestUserTasteprofile
 {
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
@@ -182,30 +177,30 @@
                    for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
                        DLog(@"%@", request.response);
                        if ([[self lastUser] isEqualToString:aName[@"name"]]) {
-                           self.userList = aName[@"id"];
-                           DLog(@"UserList is: %@", self.userList);
+                           self.userTasteprofile = aName[@"id"];
+                           DLog(@"UserTasteprofile is: %@", self.userTasteprofile);
                            return;
                        }
                    }
-                   DLog(@"UserList not found ):");
-                   self.userList = nil;
-                   [self echoNestCreateUserList];
+                   DLog(@"User Tasteprofile not found ):");
+                   self.userTasteprofile = nil;
+                   [self echoNestCreateUserTasteprofile];
                }];
 }
 
-- (void)echoNestUserListwithCompletionBlock:(void (^)(NSString *userList))completionBlock
+- (void)echoNestUserTasteprofileWithCompletionBlock:(void (^)(NSString *userTasteprofile))completionBlock
 {
     /* use with:
-    [self echoNestUserListwithCompletionBlock:^(NSString *userList) {
-        DLog(@"%@", userList);
+    [self echoNestUserTasteprofileWithCompletionBlock:^(NSString *userTasteprofile) {
+        DLog(@"%@", userTasteprofile);
     }];
      */
     
     if(!completionBlock)
         return; // Avoid crashs
     
-    if (self.userList) {
-        completionBlock(self.userList);
+    if (self.userTasteprofile) {
+        completionBlock(self.userTasteprofile);
     } else {
         [ENAPIRequest GETWithEndpoint:@"catalog/list"
                         andParameters:nil
@@ -229,7 +224,7 @@
                }];
 }
 
-- (void)echoNestCreateUserList
+- (void)echoNestCreateUserTasteprofile
 {
     NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
     
@@ -244,7 +239,7 @@
                                  (NSString  *)[request.response valueForKeyPath:@"response.id"]
                                  ]);
                     if (request.echonestStatusCode) {
-                        // userList existed, returning existing ID
+                        // userTasteprofile existed, returning existing ID
                         __block NSString *lastWord = nil;
                         NSString *aString = request.echonestStatusMessage;
                         
@@ -255,18 +250,18 @@
                                                      *stop = YES;
                                                  }];
                         
-                        DLog(@"userList: %@", lastWord);
+                        DLog(@"userTasteprofile: %@", lastWord);
                         
-                        self.userList = lastWord;
+                        self.userTasteprofile = lastWord;
                     } else {
-                        // no userList existed, we just created a new one
+                        // no userTasteprofile existed, we just created a new one
                         NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
-                        self.userList = catalogId;
+                        self.userTasteprofile = catalogId;
                     }
                 }];
 }
 
-- (void)echoNestDelete:(NSString *)catalogId
+- (void)echoNestDeleteCatalog:(NSString *)catalogId
 {
     NSDictionary *parameters = @{@"id": catalogId};
     
@@ -282,18 +277,21 @@
                        catalogId
                        ]);
      }];
-    self.userList = nil;
+    self.userTasteprofile = nil;
 }
 
-- (void)echoNestUpdateWithData:(NSArray *)data
+- (void)echoNestUpdateUserTasteprofileWithData:(NSArray *)data
 {
-    NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
-    
-    [ENAPIRequest POSTWithEndpoint:@"catalog/update"
-                     andParameters:parameters
-                andCompletionBlock:^(ENAPIRequest *request) {
-                    DLog(@"Reqeust.response:\n%@", request.response);
-                }];
+    [self echoNestUserTasteprofileWithCompletionBlock:^(NSString *userTasteprofile) {
+        NSDictionary *parameters = @{@"id": userTasteprofile, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
+        
+        [ENAPIRequest POSTWithEndpoint:@"catalog/update"
+                         andParameters:parameters
+                    andCompletionBlock:^(ENAPIRequest *request) {
+                        DLog(@"Reqeust.response:\n%@", request.response);
+                        self.userTicket = (NSString *)[request.response valueForKeyPath:@"response.ticket"];
+                    }];
+    }];
 }
 
 #pragma mark - Spotify
@@ -341,7 +339,7 @@
                 NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
                 DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
                 
-                [self echoNestUpdateWithData:returnArray];
+                [self echoNestUpdateUserTasteprofileWithData:returnArray];
             }];
         }];
     }];
@@ -378,7 +376,12 @@
     }];
 }
 
-#pragma mark - helper
+#pragma mark - Helper
+
+- (NSString *)lastUser
+{
+    return [[NSUserDefaults standardUserDefaults] valueForKey:@"SpotifyUsers"][@"LastUser"];
+}
 
 - (NSString *)spotifyString:(NSString *)string
 {
