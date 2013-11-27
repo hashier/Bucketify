@@ -129,12 +129,12 @@
 
 -(void)session:(SPSession *)aSession didLogMessage:(NSString *)aMessage
 {
-    DLog(@"Log-worthy: %@", aMessage);
+//    DLog(@"Log-worthy: %@", aMessage);
 }
 
 -(void)sessionDidChangeMetadata:(SPSession *)aSession
 {
-    DLog(@"Called when metadata has been updated.");
+//    DLog(@"Called when metadata has been updated.");
 }
 
 -(void)session:(SPSession *)aSession recievedMessageForUser:(NSString *)aMessage
@@ -158,10 +158,12 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    NSString *play = @"test88";
-    [self spotifyCreatePlaylist:play];
-    [self spotifyAddSong:@"spotify:track:1STjJ4su0G65hlXryuEh30" toPlaylist:play];
-    [self spotifyAddSong:@"spotify:track:6iqEd2PFZanx8qcynhfE9d" toPlaylist:play];
+    [self spotifyAddSongs:@[@"spotify:track:2b86QdcYHnO4YRXqfqlmGH", @"spotify:track:3KT0wY2cGC8kDJMGDLx751", @"spotify:track:7gNx6OZkE7z6KHKeKlZ9nO"] toPlaylist:@"gabi5"];
+//    [self echoNestUserTasteprofileRead];
+//    NSString *play = @"test88";
+//    [self spotifyCreatePlaylist:play];
+//    [self spotifyAddSong:@"spotify:track:1STjJ4su0G65hlXryuEh30" toPlaylist:play];
+//    [self spotifyAddSong:@"spotify:track:6iqEd2PFZanx8qcynhfE9d" toPlaylist:play];
 //    [self spotifyDumpItemsFromStarredPlaylist];
 //    [self echoNestCreateUserTasteprofile];
 //    [self buildArrayItemsFromStarredPlaylist];
@@ -172,7 +174,6 @@
 #pragma mark - EchoNest
 
 // TODO: /status function
-// TODO: read data back again function
 
 - (void)echoNestUserTasteprofile
 {
@@ -180,7 +181,7 @@
                     andParameters:nil
                andCompletionBlock:^(ENAPIRequest *request) {
                    for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
-                       DLog(@"%@", request.response);
+//                       DLog(@"%@", request.response);
                        if ([[self lastUser] isEqualToString:aName[@"name"]]) {
                            self.userTasteprofile = aName[@"id"];
                            DLog(@"UserTasteprofile is: %@", self.userTasteprofile);
@@ -189,7 +190,7 @@
                    }
                    DLog(@"User Tasteprofile not found ):");
                    self.userTasteprofile = nil;
-                   [self echoNestCreateUserTasteprofile];
+                   [self echoNestUserTasteprofileCreate];
                }];
 }
 
@@ -220,7 +221,18 @@
     }
 }
 
-- (void)echoNestLists
+- (void)echoNestUserTasteprofileRead
+{
+    NSDictionary *parameters = @{@"id": self.userTasteprofile, @"bucket": @"artist_location", @"results": @"1000"};
+    
+    [ENAPIRequest GETWithEndpoint:@"catalog/read"
+                    andParameters:parameters
+               andCompletionBlock:^(ENAPIRequest *request) {
+                   DLog(@"%@", request.response);
+               }];
+}
+
+- (void)echoNestUserTasteprofileLists
 {
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
@@ -229,7 +241,7 @@
                }];
 }
 
-- (void)echoNestCreateUserTasteprofile
+- (void)echoNestUserTasteprofileCreate
 {
     NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
     
@@ -266,26 +278,27 @@
                 }];
 }
 
-- (void)echoNestDeleteCatalog:(NSString *)catalogId
+- (void)echoNestUserTasteprofileDelete
 {
-    NSDictionary *parameters = @{@"id": catalogId};
+    if (!self.userTasteprofile) return;
+    
+    NSDictionary *parameters = @{@"id": self.userTasteprofile};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
                      andParameters:parameters
-                andCompletionBlock:
-     ^(ENAPIRequest *request) {
+                andCompletionBlock:^(ENAPIRequest *request) {
          DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
-                       NSIntToLong(request.httpResponseCode),
-                       NSIntToLong(request.echonestStatusCode),
-                       request.echonestStatusMessage,
-                       request.errorMessage,
-                       catalogId
-                       ]);
+                      NSIntToLong(request.httpResponseCode),
+                      NSIntToLong(request.echonestStatusCode),
+                      request.echonestStatusMessage,
+                      request.errorMessage,
+                      self.userTasteprofile
+                      ]);
      }];
     self.userTasteprofile = nil;
 }
 
-- (void)echoNestUpdateUserTasteprofileWithData:(NSArray *)data
+- (void)echoNestUserTasteprofileUpdateWithData:(NSArray *)data
 {
     [self echoNestUserTasteprofileWithCompletionBlock:^(NSString *userTasteprofile) {
         NSDictionary *parameters = @{@"id": userTasteprofile, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
@@ -344,7 +357,7 @@
                 NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
                 DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
                 
-                [self echoNestUpdateUserTasteprofileWithData:returnArray];
+                [self echoNestUserTasteprofileUpdateWithData:returnArray];
             }];
         }];
     }];
@@ -383,40 +396,52 @@
     }];
 }
 
-- (void)spotifyAddSong:(NSString *)song toPlaylist:(NSString *)playlistName
+- (void)spotifyAddSongs:(NSArray *)songs toPlaylist:(NSString *)playlistName
 {
+    void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songs) {
+        for (NSString *aSong in songs) {
+            DLog(@"Try to add song: %@ to %@", aSong, thePlaylist.name);
+            [SPTrack trackForTrackURL:[NSURL URLWithString:aSong] inSession:[SPSession sharedSession] callback:^(SPTrack *aTrack) {
+                [thePlaylist addItem:aTrack atIndex:0 callback:^(NSError *error) {
+                    if (error) {
+                        DLog(@"Couln't add track %@", aTrack.name);
+                        DLog(@"%@", error);
+                    } else {
+                        DLog(@"Track %@ successfully added", aTrack.name);
+                    }
+                }];
+            }];
+        }
+    };
+    
     [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
-        
         SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
-        
         [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
+            
             NSMutableArray *playlists = [NSMutableArray array];
 			[playlists addObject:[SPSession sharedSession].starredPlaylist];
 			[playlists addObject:[SPSession sharedSession].inboxPlaylist];
 			[playlists addObjectsFromArray:[SPSession sharedSession].userPlaylists.flattenedPlaylists];
             
 			[SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
-                SPPlaylist *addItemToThisPlaylist;
+                SPPlaylist *addItemsToThisPlaylist;
                 for (SPPlaylist *aPlaylist in loadedPlaylists) {
                     if ([aPlaylist.name isEqualToString:playlistName]) {
                         DLog(@"Found playlist with name %@", playlistName);
-                        addItemToThisPlaylist = aPlaylist;
+                        addItemsToThisPlaylist = aPlaylist;
+                        addSongsToPlaylist(addItemsToThisPlaylist, songs);
+                        break;
                     }
                 }
-                if (!addItemToThisPlaylist) {
-                    DLog(@"Coudn't find a playlist with the given name: %@", playlistName);
-                    return;
-                }
-                [SPTrack trackForTrackURL:[NSURL URLWithString:song] inSession:[SPSession sharedSession] callback:^(SPTrack *aTrack) {
-                    [addItemToThisPlaylist addItem:aTrack atIndex:0 callback:^(NSError *error) {
-                        if (error) {
-                            DLog(@"Couln't add track");
-                            DLog(@"%@", error);
-                        } else {
-                            DLog(@"Added track");
-                        }
+                // no playlist found so we create a new one and add songs to it
+                if (!addItemsToThisPlaylist) {
+                    [container createPlaylistWithName:playlistName callback:^(SPPlaylist *createdPlaylist) {
+                        [SPAsyncLoading waitUntilLoaded:createdPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
+                            DLog(@"Playlist %@ created (%@)", playlistName, createdPlaylist.name);
+                            addSongsToPlaylist(createdPlaylist, songs);
+                        }];
                     }];
-                }];
+                }
             }];
         }];
     }];
