@@ -287,8 +287,6 @@
 
 - (void)echoNestUpdateWithData:(NSArray *)data
 {
-    // TODO: Take care if userList is empty
-    
     NSDictionary *parameters = @{@"id": self.userList, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/update"
