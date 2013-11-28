@@ -6,6 +6,9 @@
 //  Copyright (c) 2013 Christopher Loessl. All rights reserved.
 //
 
+// song -> NSString that is a spotify:track:...
+// track -> SPTrack
+
 #import "ViewController.h"
 #import "common.h"
 #import "ENAPI.h"
@@ -16,6 +19,7 @@
 
 @property (strong, nonatomic) NSString *userTasteprofile;
 @property (strong, nonatomic) NSString *userTicket;
+@property (strong, nonatomic) NSSet *echoNestArtists;
 
 @end
 
@@ -158,7 +162,10 @@
 
 - (IBAction)doItButton:(id)sender
 {
-    [self spotifyAddSongs:@[@"spotify:track:2b86QdcYHnO4YRXqfqlmGH", @"spotify:track:3KT0wY2cGC8kDJMGDLx751", @"spotify:track:7gNx6OZkE7z6KHKeKlZ9nO"] toPlaylist:@"gabi5"];
+    DLog(@"Button pressed (:");
+    
+    [self echoNestUserTasteprofileReadAndFilterByCountry:@"Sweden"];
+//    [self spotifyAddSongs:@[@"spotify:track:2b86QdcYHnO4YRXqfqlmGH", @"spotify:track:3KT0wY2cGC8kDJMGDLx751", @"spotify:track:7gNx6OZkE7z6KHKeKlZ9nO"] toPlaylist:@"Starred_Filtered"];
 //    [self echoNestUserTasteprofileRead];
 //    NSString *play = @"test88";
 //    [self spotifyCreatePlaylist:play];
@@ -221,14 +228,29 @@
     }
 }
 
-- (void)echoNestUserTasteprofileRead
+- (void)echoNestUserTasteprofileReadAndFilterByCountry:(NSString *)country
 {
+    // TODO: Only the first 1000 results are considered
+    // results parameter can max be 1000
+    // if more than 1000 -> new requests and start at 1000
+    
     NSDictionary *parameters = @{@"id": self.userTasteprofile, @"bucket": @"artist_location", @"results": @"1000"};
     
     [ENAPIRequest GETWithEndpoint:@"catalog/read"
                     andParameters:parameters
                andCompletionBlock:^(ENAPIRequest *request) {
-                   DLog(@"%@", request.response);
+                   NSMutableSet *aSet = [[NSMutableSet alloc] init];
+                   for (NSDictionary *aDict in [request.response valueForKeyPath:@"response.catalog.items"]) {
+                       if ([aDict[@"artist_location"] isKindOfClass:[NSDictionary class]]) {
+                           if ([[aDict valueForKeyPath:@"artist_location.country"] isEqualToString:country]) {
+                               DLog(@"Adding artist %@ to set", aDict[@"artist_name"]);
+                               [aSet addObject:aDict];
+                           } else {
+                               DLog(@"Skipping artist %@", aDict[@"artist_name"]);
+                           }
+                       }
+                   }
+                   self.echoNestArtists = aSet;
                }];
 }
 
@@ -445,6 +467,15 @@
             }];
         }];
     }];
+}
+
+- (void)spotifyIterateOverAllTracksIn:(SPPlaylist *)playlist withCompletionBlock:(void (^)(SPTrack *item))completionBlock
+{
+    [SPAsyncLoading waitUntilLoaded:playlist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
+        
+    }];
+    // iterate over all items in e.g. starred playlist
+    // check if aItem is in the list of e.g. swedish artists
 }
 
 #pragma mark - Helper
