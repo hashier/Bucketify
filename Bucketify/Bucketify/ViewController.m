@@ -20,6 +20,7 @@
 @property (strong, nonatomic) NSString *userTasteprofile;
 @property (strong, nonatomic) NSString *userTicket;
 @property (strong, nonatomic) NSSet *echoNestArtists;
+@property (assign, nonatomic) NSInteger echoNestTicketStatus;
 
 @end
 
@@ -180,8 +181,6 @@
 
 #pragma mark - EchoNest
 
-// TODO: /status function
-
 - (void)echoNestUserTasteprofile
 {
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
@@ -251,6 +250,17 @@
                        }
                    }
                    self.echoNestArtists = aSet;
+               }];
+}
+
+- (void)echoNestUserTasteprofileStatusOfTicket:(NSString *)ticket
+{
+    NSDictionary *parameters = @{@"ticket": ticket};
+    
+    [ENAPIRequest GETWithEndpoint:@"catalog/status"
+                    andParameters:parameters
+               andCompletionBlock:^(ENAPIRequest *request) {
+                   self.echoNestTicketStatus = request.echonestStatusCode;
                }];
 }
 
