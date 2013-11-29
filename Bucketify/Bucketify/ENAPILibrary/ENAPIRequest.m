@@ -170,7 +170,7 @@ static NSMutableArray *EN_SECURED_ENDPOINTS = nil;
         
     self.url = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@?%@", ECHONEST_API_URL, self.endpoint, [ENAPI encodeDictionaryAsQueryString:self.parameters]]];
     
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.url];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:self.url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:requestTimeoutInterval];
     
     [request setTimeoutInterval:requestTimeoutInterval];
     
@@ -398,7 +398,7 @@ static NSMutableArray *EN_SECURED_ENDPOINTS = nil;
 }
 
 - (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse {
-    return cachedResponse;
+    return nil;
 }
 
 - (NSURLRequest *)connection:(NSURLConnection *)connection willSendRequest:(NSURLRequest *)request redirectResponse:(NSURLResponse *)redirectResponse {

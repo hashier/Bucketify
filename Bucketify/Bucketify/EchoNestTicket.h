@@ -1,5 +1,5 @@
 //
-//  EchonestWollmilchsau.h
+//  EchoNestTicket.h
 //  Bucketify
 //
 //  Created by Christopher Loessl on 29/11/13.
@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 #import "CocoaLibSpotify.h"
 
-@interface EchonestWollmilchsau : NSObject
+@interface EchoNestTicket : NSObject <SPAsyncLoading>
 
-- (void)filerStarredItemsByCountry:(NSString *)country;
+@property (strong, nonatomic) NSString *ticket;
+- (id)initWithTicket:(NSString *)ticket;
 
 @end

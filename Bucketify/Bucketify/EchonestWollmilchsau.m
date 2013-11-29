@@ -9,13 +9,11 @@
 #import "EchonestWollmilchsau.h"
 #import "common.h"
 #import "ENAPI.h"
+#import "EchoNestTicket.h"
 
 @interface EchonestWollmilchsau ()
 
-@property (strong, nonatomic) NSString *userTasteprofile;
-@property (strong, nonatomic) NSString *userTicket;
-@property (assign, nonatomic) NSInteger echoNestTicketPercentage;
-@property (strong, nonatomic) NSSet *echoNestArtists;
+@property (strong, nonatomic) NSString *userTasteprofileID;
 
 @end
 
@@ -30,65 +28,18 @@
     return self;
 }
 
+#pragma mark - Public
+
+- (void)filerStarredItemsByCountry:(NSString *)country
+{
+    [self echoNestUserTasteprofileUseWithCompletionBlock:^(NSString *userTasteprofileID) {
+        [self spotifyStarredPlaylistToEchoNestTasteprofileID:userTasteprofileID then:^{
+            [self echoNestUserTasteprofileID:userTasteprofileID readAndFilterByCountry:@"Sweden"];
+        }];
+    }];
+}
+
 #pragma mark - EchoNest
-
-- (void)echoNestUserTasteprofile
-{
-    [ENAPIRequest GETWithEndpoint:@"catalog/list"
-                    andParameters:nil
-               andCompletionBlock:^(ENAPIRequest *request) {
-                   for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
-                       if ([[self lastUser] isEqualToString:aName[@"name"]]) {
-                           self.userTasteprofile = aName[@"id"];
-                           DLog(@"UserTasteprofile is: %@", self.userTasteprofile);
-                           return;
-                       }
-                   }
-                   DLog(@"User Tasteprofile not found ):");
-                   self.userTasteprofile = nil;
-                   [self echoNestUserTasteprofileCreateWithCompletionBlock:nil];
-               }];
-}
-
-- (void)echoNestUserTasteprofileWithCompletionBlock:(void (^)(NSString *userTasteprofile))completionBlock
-{
-    /* use with:
-     [self echoNestUserTasteprofileWithCompletionBlock:^(NSString *userTasteprofile) {
-     DLog(@"%@", userTasteprofile);
-     }];
-     */
-    
-    if (self.userTasteprofile) {
-        if (completionBlock) completionBlock(self.userTasteprofile);
-    } else {
-        [ENAPIRequest GETWithEndpoint:@"catalog/list"
-                        andParameters:nil
-                   andCompletionBlock:^(ENAPIRequest *request) {
-                       for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
-                           if ([[self lastUser] isEqualToString:aName[@"name"]]) {
-                               self.userTasteprofile = aName[@"id"];
-                               DLog(@"UserTasteprofile is: %@", self.userTasteprofile);
-                               if (completionBlock) completionBlock(self.userTasteprofile);
-                               return;
-                           }
-                       }
-                       DLog(@"User Tasteprofile not found ): creating one");
-                       self.userTasteprofile = nil;
-                       [self echoNestUserTasteprofileCreateWithCompletionBlock:completionBlock];
-                   }];
-    }
-}
-
-- (void)echoNestUserTasteprofileUpdateStatusOfTicket:(NSString *)ticket
-{
-    NSDictionary *parameters = @{@"ticket": ticket};
-    
-    [ENAPIRequest GETWithEndpoint:@"catalog/status"
-                    andParameters:parameters
-               andCompletionBlock:^(ENAPIRequest *request) {
-                   self.echoNestTicketPercentage = [request.response[@"response"][@"percent_complete"] integerValue];
-               }];
-}
 
 - (void)echoNestUserTasteprofileLists
 {
@@ -99,87 +50,103 @@
                }];
 }
 
-- (void)echoNestUserTasteprofileCreateWithCompletionBlock:(void (^)(NSString *userTasteprofile))completionBlock
+- (void)echoNestUserTasteprofile
 {
-    NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
-    
-    [ENAPIRequest POSTWithEndpoint:@"catalog/create"
-                     andParameters:parameters
-                andCompletionBlock:^(ENAPIRequest *request) {
-                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Create Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
-                                 NSIntToLong(request.httpResponseCode),
-                                 NSIntToLong(request.echonestStatusCode),
-                                 request.echonestStatusMessage,
-                                 request.errorMessage,
-                                 (NSString  *)[request.response valueForKeyPath:@"response.id"]
-                                 ]);
-                    if (request.echonestStatusCode) {
-                        // userTasteprofile existed, returning existing ID
-                        __block NSString *lastWord = nil;
-                        NSString *aString = request.echonestStatusMessage;
-                        
-                        [aString enumerateSubstringsInRange:NSMakeRange(0, [aString length])
-                                                    options:NSStringEnumerationByWords | NSStringEnumerationReverse
-                                                 usingBlock:^(NSString *substring, NSRange subrange, NSRange enclosingRange, BOOL *stop) {
-                                                     lastWord = substring;
-                                                     *stop = YES;
-                                                 }];
-                        DLog(@"userTasteprofile: %@", lastWord);
-                        self.userTasteprofile = lastWord;
+    [ENAPIRequest GETWithEndpoint:@"catalog/list"
+                    andParameters:nil
+               andCompletionBlock:^(ENAPIRequest *request) {
+                   for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
+                       if ([[self lastUser] isEqualToString:aName[@"name"]]) {
+                           self.userTasteprofileID = aName[@"id"];
+                           DLog(@"UserTasteprofileID is: %@", self.userTasteprofileID);
+                           return;
+                       }
+                   }
+                   DLog(@"User Tasteprofile not found ):");
+                   self.userTasteprofileID = nil;
+                   [self echoNestUserTasteprofileUseWithCompletionBlock:nil];
+               }];
+}
 
-                        if (completionBlock) completionBlock(self.userTasteprofile);
-                    } else {
-                        // no userTasteprofile existed, we just created a new one
-                        NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
-                        self.userTasteprofile = catalogId;
-                        
-                        if (completionBlock) completionBlock(self.userTasteprofile);
-                    }
-                }];
+- (void)echoNestUserTasteprofileUseWithCompletionBlock:(void (^)(NSString *userTasteprofileID))completionBlock
+{
+    if (self.userTasteprofileID) {
+        if (completionBlock) completionBlock(self.userTasteprofileID);
+    } else {
+        NSDictionary *parameters = @{@"name": [self lastUser], @"type": @"artist"};
+        
+        [ENAPIRequest POSTWithEndpoint:@"catalog/create"
+                         andParameters:parameters
+                    andCompletionBlock:^(ENAPIRequest *request) {
+                        if (request.echonestStatusCode) {
+                            // userTasteprofileID existed, returning existing ID
+                            __block NSString *lastWord = nil;
+                            NSString *aString = request.echonestStatusMessage;
+                            [aString enumerateSubstringsInRange:NSMakeRange(0, [aString length])
+                                                        options:NSStringEnumerationByWords | NSStringEnumerationReverse
+                                                     usingBlock:^(NSString *substring, NSRange subrange, NSRange enclosingRange, BOOL *stop) {
+                                                         lastWord = substring;
+                                                         *stop = YES;
+                                                     }];
+                            DLog(@"userTasteprofileID: %@", lastWord);
+                            self.userTasteprofileID = lastWord;
+                            
+                            if (completionBlock) completionBlock(self.userTasteprofileID);
+                        } else {
+                            // no userTasteprofileID existed, we just created a new one
+                            NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
+                            self.userTasteprofileID = catalogId;
+                            
+                            if (completionBlock) completionBlock(self.userTasteprofileID);
+                        }
+                    }];
+    }
 }
 
 - (void)echoNestUserTasteprofileDelete
 {
-    if (!self.userTasteprofile) return;
+    if (!self.userTasteprofileID) return;
     
-    NSDictionary *parameters = @{@"id": self.userTasteprofile};
+    NSDictionary *parameters = @{@"id": self.userTasteprofileID};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
                      andParameters:parameters
                 andCompletionBlock:^(ENAPIRequest *request) {
-                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\n",
+                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\nWhole request: %@",
                                  NSIntToLong(request.httpResponseCode),
                                  NSIntToLong(request.echonestStatusCode),
                                  request.echonestStatusMessage,
                                  request.errorMessage,
-                                 self.userTasteprofile
+                                 self.userTasteprofileID,
+                                 request.response
                                  ]);
                 }];
-    self.userTasteprofile = nil;
+    self.userTasteprofileID = nil;
 }
 
-- (void)echoNestUserTasteprofileUpdateWithData:(NSArray *)data
+- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID updateWithData:(NSArray *)data then:(void (^)())completionBlock
 {
-    [self echoNestUserTasteprofileWithCompletionBlock:^(NSString *userTasteprofile) {
-        
-        NSDictionary *parameters = @{@"id": userTasteprofile, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
-        
-        [ENAPIRequest POSTWithEndpoint:@"catalog/update"
-                         andParameters:parameters
-                    andCompletionBlock:^(ENAPIRequest *request) {
-                        DLog(@"Reqeust.response:\n%@", request.response);
-                        self.userTicket = [request.response valueForKeyPath:@"response.ticket"];
+    NSDictionary *parameters = @{@"id": userTasteprofileID, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
+    
+    [ENAPIRequest POSTWithEndpoint:@"catalog/update"
+                     andParameters:parameters
+                andCompletionBlock:^(ENAPIRequest *request) {
+                    NSString *aTicketString = [request.response valueForKeyPath:@"response.ticket"];
+                    EchoNestTicket *aTicket = [[EchoNestTicket alloc] initWithTicket:aTicketString];
+                    [SPAsyncLoading waitUntilLoaded:aTicket timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTicket, NSArray *notLoadedTicket) {
+                        DLog(@"\nINFO: %@\nINFO NOT: %@", loadedTicket, notLoadedTicket);
+                        if (completionBlock) completionBlock();
                     }];
-    }];
+                }];
 }
 
-- (void)echoNestUserTasteprofileReadAndFilterByCountry:(NSString *)country
+- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID readAndFilterByCountry:(NSString *)country
 {
     // TODO: Only the first 1000 results are considered
     // results parameter can max be 1000
     // if more than 1000 -> new requests and start at 1000
     
-    NSDictionary *parameters = @{@"id": self.userTasteprofile, @"bucket": @"artist_location", @"results": @"1000"};
+    NSDictionary *parameters = @{@"id": userTasteprofileID, @"bucket": @"artist_location", @"results": @"1000"};
     
     [ENAPIRequest GETWithEndpoint:@"catalog/read"
                     andParameters:parameters
@@ -187,21 +154,27 @@
                    NSMutableSet *aSet = [[NSMutableSet alloc] init];
                    for (NSDictionary *aDict in [request.response valueForKeyPath:@"response.catalog.items"]) {
                        if ([aDict[@"artist_location"] isKindOfClass:[NSDictionary class]]) {
-                           if ([[aDict valueForKeyPath:@"artist_location.country"] isEqualToString:country]) {
-                               DLog(@"Adding artist %@ to set", aDict[@"artist_name"]);
-                               [aSet addObject:aDict];
-                           } else {
-                               DLog(@"Skipping artist %@", aDict[@"artist_name"]);
+                           DLog(@"Current artists informations: %@", aDict);
+                           if ([[aDict valueForKeyPath:@"artist_location.country"] isKindOfClass:[NSString class]]) {
+                               if ([[aDict valueForKeyPath:@"artist_location.country"] isEqualToString:country]) {
+                                   DLog(@"Adding artist %@ to set", aDict[@"artist_name"]);
+                                   [aSet addObject:aDict];
+                               } else {
+                                   DLog(@"Skipping artist %@", aDict[@"artist_name"]);
+                               }
                            }
                        }
                    }
-                   self.echoNestArtists = aSet;
+                   // get every sptrack
+                   // check against aset
+                   // save tracks that pass
+                   // add all tracks to playlist
                }];
 }
 
 #pragma mark - Spotify
 
-- (void)spotifyStarredPlaylistToEchoNest
+- (void)spotifyStarredPlaylistToEchoNestTasteprofileID:(NSString *)userTasteprofileID then:(void (^)())completionBlock
 {
     [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
         
@@ -244,7 +217,7 @@
                 NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
                 DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
                 
-                [self echoNestUserTasteprofileUpdateWithData:returnArray];
+                [self echoNestUserTasteprofileID:userTasteprofileID updateWithData:returnArray then:completionBlock];
             }];
         }];
     }];

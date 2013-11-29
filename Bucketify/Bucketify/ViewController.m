@@ -11,10 +11,14 @@
 
 #import "ViewController.h"
 #import "common.h"
+#import "EchonestWollmilchsau.h"
+#import "EchoNestTicket.h"
 
 #include "appkey.c"
 
 @interface ViewController ()
+
+@property (strong, nonatomic) EchonestWollmilchsau *filterStarredItems;
 
 @end
 
@@ -154,17 +158,8 @@
 {
     DLog(@"Button pressed (:");
     
-//    [self echoNestUserTasteprofileReadAndFilterByCountry:@"Sweden"];
-//    [self spotifyAddSongs:@[@"spotify:track:2b86QdcYHnO4YRXqfqlmGH", @"spotify:track:3KT0wY2cGC8kDJMGDLx751", @"spotify:track:7gNx6OZkE7z6KHKeKlZ9nO"] toPlaylist:@"Starred_Filtered"];
-//    [self echoNestUserTasteprofileRead];
-//    NSString *play = @"test88";
-//    [self spotifyCreatePlaylist:play];
-//    [self spotifyAddSong:@"spotify:track:1STjJ4su0G65hlXryuEh30" toPlaylist:play];
-//    [self spotifyAddSong:@"spotify:track:6iqEd2PFZanx8qcynhfE9d" toPlaylist:play];
-//    [self spotifyDumpItemsFromStarredPlaylist];
-//    [self echoNestCreateUserTasteprofile];
-//    [self buildArrayItemsFromStarredPlaylist];
-//    [self dumpItemsFromStarredPlaylist];
+    self.filterStarredItems = [[EchonestWollmilchsau alloc] init];
+    [self.filterStarredItems filerStarredItemsByCountry:@"Sweden"];
 }
 
 @end
