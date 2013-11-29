@@ -24,6 +24,7 @@
 		00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6B18439C4500890D64 /* Base64Transcoder.c */; };
 		00503E7418439C4600890D64 /* ENAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6E18439C4500890D64 /* ENAPI.m */; };
 		00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E7118439C4500890D64 /* ENAPIRequest.m */; };
+		00E3B812184804FC009B351B /* EchonestWollmilchsau.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B811184804FC009B351B /* EchonestWollmilchsau.m */; };
 		5267851FA27C46D0AEB03841 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 743D12CB79C84A95BCA21E57 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -65,6 +66,8 @@
 		00503E7018439C4500890D64 /* ENAPIRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ENAPIRequest.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		00503E7118439C4500890D64 /* ENAPIRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ENAPIRequest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		00503E7218439C4500890D64 /* ENLibrary-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ENLibrary-Prefix.pch"; sourceTree = "<group>"; };
+		00E3B810184804FC009B351B /* EchonestWollmilchsau.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EchonestWollmilchsau.h; sourceTree = "<group>"; };
+		00E3B811184804FC009B351B /* EchonestWollmilchsau.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EchonestWollmilchsau.m; sourceTree = "<group>"; };
 		00ECAC29183C51E4006D311F /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = common.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		743D12CB79C84A95BCA21E57 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9531CCEBAB3A45ED82150BE3 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = "<group>"; };
@@ -130,6 +133,7 @@
 		004481CD18257318007AD1F4 /* Bucketify */ = {
 			isa = PBXGroup;
 			children = (
+				00E3B81318480536009B351B /* Classes */,
 				00BFB5B61842A45E00E354E1 /* VC */,
 				004481D918257318007AD1F4 /* Main.storyboard */,
 				004481DF18257318007AD1F4 /* Images.xcassets */,
@@ -201,6 +205,15 @@
 				004481DD18257318007AD1F4 /* ViewController.m */,
 			);
 			name = VC;
+			sourceTree = "<group>";
+		};
+		00E3B81318480536009B351B /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				00E3B810184804FC009B351B /* EchonestWollmilchsau.h */,
+				00E3B811184804FC009B351B /* EchonestWollmilchsau.m */,
+			);
+			name = Classes;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -337,6 +350,7 @@
 			files = (
 				004481DE18257318007AD1F4 /* ViewController.m in Sources */,
 				004481D818257318007AD1F4 /* AppDelegate.m in Sources */,
+				00E3B812184804FC009B351B /* EchonestWollmilchsau.m in Sources */,
 				004481D418257318007AD1F4 /* main.m in Sources */,
 				00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */,
 				00503E7418439C4600890D64 /* ENAPI.m in Sources */,
