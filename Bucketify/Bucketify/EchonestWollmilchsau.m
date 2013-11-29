@@ -34,7 +34,7 @@
 {
     [self echoNestUserTasteprofileUseWithCompletionBlock:^(NSString *userTasteprofileID) {
         [self spotifyStarredPlaylistToEchoNestTasteprofileID:userTasteprofileID then:^{
-            [self echoNestUserTasteprofileID:userTasteprofileID readAndFilterByCountry:@"Sweden"];
+            [self echoNestUserTasteprofileID:userTasteprofileID readStarredAndFilterByCountry:country];
         }];
     }];
 }
@@ -134,13 +134,13 @@
                     NSString *aTicketString = [request.response valueForKeyPath:@"response.ticket"];
                     EchoNestTicket *aTicket = [[EchoNestTicket alloc] initWithTicket:aTicketString];
                     [SPAsyncLoading waitUntilLoaded:aTicket timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTicket, NSArray *notLoadedTicket) {
-                        DLog(@"\nINFO: %@\nINFO NOT: %@", loadedTicket, notLoadedTicket);
+                        DLog(@"\nTickets finished: %@\nTickets not finished: %@", loadedTicket, notLoadedTicket);
                         if (completionBlock) completionBlock();
                     }];
                 }];
 }
 
-- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID readAndFilterByCountry:(NSString *)country
+- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID readStarredAndFilterByCountry:(NSString *)country
 {
     // TODO: Only the first 1000 results are considered
     // results parameter can max be 1000
@@ -158,17 +158,41 @@
                            if ([[aDict valueForKeyPath:@"artist_location.country"] isKindOfClass:[NSString class]]) {
                                if ([[aDict valueForKeyPath:@"artist_location.country"] isEqualToString:country]) {
                                    DLog(@"Adding artist %@ to set", aDict[@"artist_name"]);
-                                   [aSet addObject:aDict];
+                                   [aSet addObject:[aDict valueForKeyPath:@"request.artist_id"]];
                                } else {
                                    DLog(@"Skipping artist %@", aDict[@"artist_name"]);
                                }
                            }
                        }
                    }
-                   // get every sptrack
-                   // check against aset
-                   // save tracks that pass
-                   // add all tracks to playlist
+
+                   [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
+                       
+                       DLog(@"Session loaded");
+                       
+                       [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
+                           
+                           DLog(@"Starred Playlist loaded: %@", [SPSession sharedSession].starredPlaylist);
+                           
+                           NSArray *playlistItems = [loadedPlaylists valueForKeyPath:@"@unionOfArrays.items"];
+                           NSArray *tracks = [self tracksFromPlaylistItems:playlistItems];
+                           
+                           [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+                               NSMutableArray *tracksToAddToSpotify = [[NSMutableArray alloc] init];
+                               DLog(@"Tracks to check: %lu", NSUIntToLong([tracks count]));
+                               for (SPTrack *aTrack in tracks) {
+                                   for (SPArtist *anArtist in aTrack.artists) {
+                                       if ([aSet containsObject:[self spotifyString:[anArtist.spotifyURL absoluteString]]]) {
+                                           [tracksToAddToSpotify addObject:[aTrack.spotifyURL absoluteString]];
+                                           break;
+                                       }
+                                   }
+                               }
+                               DLog(@"We found %lu tracks after filtering, now add them.", NSUIntToLong([tracksToAddToSpotify count]));
+                               [self spotifyAddSongURLs:tracksToAddToSpotify toPlaylistName:@"Starred_Filtered"];
+                           }];
+                       }];
+                   }];
                }];
 }
 
@@ -256,15 +280,16 @@
     }];
 }
 
-- (void)spotifyAddSongs:(NSArray *)songs toPlaylist:(NSString *)playlistName
+- (void)spotifyAddSongURLs:(NSArray *)songs toPlaylistName:(NSString *)playlistName
 {
     void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songs) {
+        DLog(@"Start to add %lu songs", NSUIntToLong([songs count]));
         for (NSString *aSong in songs) {
             DLog(@"Try to add song: %@ to %@", aSong, thePlaylist.name);
             [SPTrack trackForTrackURL:[NSURL URLWithString:aSong] inSession:[SPSession sharedSession] callback:^(SPTrack *aTrack) {
                 [thePlaylist addItem:aTrack atIndex:0 callback:^(NSError *error) {
                     if (error) {
-                        DLog(@"Couln't add track %@", aTrack.name);
+                        DLog(@"Error: Couln't add track %@", aTrack.name);
                         DLog(@"%@", error);
                     } else {
                         DLog(@"Track %@ successfully added", aTrack.name);
