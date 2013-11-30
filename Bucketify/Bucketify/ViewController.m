@@ -19,6 +19,8 @@
 @interface ViewController ()
 
 @property (strong, nonatomic) EchonestWollmilchsau *filterStarredItems;
+@property (weak, nonatomic) IBOutlet UILabel *statusLabel;
+@property (weak, nonatomic) IBOutlet UITextField *countryTextField;
 
 @end
 
@@ -159,9 +161,24 @@
 - (IBAction)doItButton:(id)sender
 {
     DLog(@"Button pressed (:");
-    
+ 
+
+    [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
     self.filterStarredItems = [[EchonestWollmilchsau alloc] init];
-    [self.filterStarredItems filerStarredItemsByCountry:@"Sweden"];
+    [self.filterStarredItems addObserver:self
+                              forKeyPath:@"status"
+                                 options:0
+                                 context:nil];
+    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
+}
+
+#pragma mark - KVO/KVC
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if ([keyPath isEqualToString:@"status"]) {
+        self.statusLabel.text = self.filterStarredItems.status;
+    }
 }
 
 @end

@@ -14,6 +14,7 @@
 @interface EchonestWollmilchsau ()
 
 @property (strong, nonatomic) NSString *userTasteprofileID;
+@property (strong, readwrite, nonatomic) NSString *status;
 
 @end
 
@@ -34,7 +35,9 @@
 {
     [self echoNestUserTasteprofileUseWithCompletionBlock:^(NSString *userTasteprofileID) {
         [self spotifyStarredPlaylistToEchoNestTasteprofileID:userTasteprofileID then:^{
-            [self echoNestUserTasteprofileID:userTasteprofileID readStarredAndFilterByCountry:country];
+            [self echoNestUserTasteprofileID:userTasteprofileID readStarredAndFilterByCountry:country then:^{
+                self.status = @"All done, check your Starred_Filtered playlist";
+            }];
         }];
     }];
 }
@@ -70,6 +73,8 @@
 
 - (void)echoNestUserTasteprofileUseWithCompletionBlock:(void (^)(NSString *userTasteprofileID))completionBlock
 {
+    self.status = @"Setting up EchoNest profile";
+    
     if (self.userTasteprofileID) {
         if (completionBlock) completionBlock(self.userTasteprofileID);
     } else {
@@ -126,6 +131,8 @@
 
 - (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID updateWithData:(NSArray *)data then:(void (^)())completionBlock
 {
+    self.status = @"Sending information to Echonest";
+    
     NSDictionary *parameters = @{@"id": userTasteprofileID, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/update"
@@ -134,17 +141,20 @@
                     NSString *aTicketString = [request.response valueForKeyPath:@"response.ticket"];
                     EchoNestTicket *aTicket = [[EchoNestTicket alloc] initWithTicket:aTicketString];
                     [SPAsyncLoading waitUntilLoaded:aTicket timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTicket, NSArray *notLoadedTicket) {
+                        self.status = @"Information sent";
                         DLog(@"\nTickets finished: %@\nTickets not finished: %@", loadedTicket, notLoadedTicket);
                         if (completionBlock) completionBlock();
                     }];
                 }];
 }
 
-- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID readStarredAndFilterByCountry:(NSString *)country
+- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID readStarredAndFilterByCountry:(NSString *)country then:(void (^)())completionBlock
 {
     // TODO: Only the first 1000 results are considered
     // results parameter can max be 1000
     // if more than 1000 -> new requests and start at 1000
+    
+    self.status = @"Getting information back from Echonest";
     
     NSDictionary *parameters = @{@"id": userTasteprofileID, @"bucket": @"artist_location", @"results": @"1000"};
     
@@ -165,6 +175,8 @@
                            }
                        }
                    }
+                   
+                   self.status = @"Matching informations";
 
                    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
                        
@@ -189,7 +201,7 @@
                                    }
                                }
                                DLog(@"We found %lu tracks after filtering, now add them.", NSUIntToLong([tracksToAddToSpotify count]));
-                               [self spotifyAddSongURLs:tracksToAddToSpotify toPlaylistName:@"Starred_Filtered"];
+                               [self spotifyAddSongURLs:tracksToAddToSpotify toPlaylistName:@"Starred_Filtered" then:completionBlock];
                            }];
                        }];
                    }];
@@ -200,48 +212,60 @@
 
 - (void)spotifyStarredPlaylistToEchoNestTasteprofileID:(NSString *)userTasteprofileID then:(void (^)())completionBlock
 {
+    self.status = @"Waiting for Spotify information";
+    
     [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
         
         DLog(@"Session loaded");
         
-        [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
+		[SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].userPlaylists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
             
-            DLog(@"Starred Playlist loaded: %@", [SPSession sharedSession].starredPlaylist);
+            DLog(@"User Playlists loaded");
             
-            NSArray *playlistItems = [loadedPlaylists valueForKeyPath:@"@unionOfArrays.items"];
-            NSArray *tracks = [self tracksFromPlaylistItems:playlistItems];
-            
-            [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+            [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].starredPlaylist timeout:35.0 then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
                 
-                DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
-                
-                NSMutableArray *allArtists = [[NSMutableArray alloc] init];
-                SPTrack *anTrack;
-                SPArtist *aArtist;
-                NSString *aURL;
-                int i = 0;
-                int j = 0;
-                for (anTrack in tracks) {
-                    i++;
-                    if (!anTrack.artists) {
-                        DLog(@"Error: Track is nil");
-                        continue;
-                    }
-                    for (aArtist in anTrack.artists) {
-                        aURL = [self spotifyString:[aArtist.spotifyURL absoluteString]];
-                        [allArtists addObject:@{@"item": @{@"item_id": [aURL stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": aURL}}];
-                    }
-                    j++;
+                if ([loadedPlaylists count] != 1) {
+                    self.status = @"Loading your playlist timed out. Check internet connectivity";
+                    return;
                 }
                 
-                //        DLog(@"%@", allSongs);
-                DLog(@"Total items processed      : %d", i);
-                DLog(@"Total that were nil        : %d", i - j);
-                DLog(@"Total number of artists    : %lu", NSUIntToLong([allArtists count]));
-                NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
-                DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
+                DLog(@"Starred Playlist loaded: %@", [SPSession sharedSession].starredPlaylist);
                 
-                [self echoNestUserTasteprofileID:userTasteprofileID updateWithData:returnArray then:completionBlock];
+                NSArray *playlistItems = [loadedPlaylists valueForKeyPath:@"@unionOfArrays.items"];
+                NSArray *tracks = [self tracksFromPlaylistItems:playlistItems];
+                
+                [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+                    
+                    DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
+                    
+                    NSMutableArray *allArtists = [[NSMutableArray alloc] init];
+                    SPTrack *anTrack;
+                    SPArtist *aArtist;
+                    NSString *aURL;
+                    int i = 0;
+                    int j = 0;
+                    for (anTrack in tracks) {
+                        i++;
+                        if (!anTrack.artists) {
+                            DLog(@"Error: Track is nil");
+                            continue;
+                        }
+                        for (aArtist in anTrack.artists) {
+                            aURL = [self spotifyString:[aArtist.spotifyURL absoluteString]];
+                            [allArtists addObject:@{@"item": @{@"item_id": [aURL stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": aURL}}];
+                        }
+                        j++;
+                    }
+                    
+                    //        DLog(@"%@", allSongs);
+                    DLog(@"Total items processed      : %d", i);
+                    DLog(@"Total that were nil        : %d", i - j);
+                    DLog(@"Total number of artists    : %lu", NSUIntToLong([allArtists count]));
+                    NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
+                    DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
+                    
+                    [self echoNestUserTasteprofileID:userTasteprofileID updateWithData:returnArray then:completionBlock];
+                }];
             }];
         }];
     }];
@@ -280,7 +304,7 @@
     }];
 }
 
-- (void)spotifyAddSongURLs:(NSArray *)songs toPlaylistName:(NSString *)playlistName
+- (void)spotifyAddSongURLs:(NSArray *)songs toPlaylistName:(NSString *)playlistName then:(void (^)())completionBlock
 {
     // Why is this in a block and not in a function?
     // If this was a function I should make sure (again) that everything is loaded just to be sure no one
@@ -289,6 +313,8 @@
     // so that this can not happen -> this is not a function but a block
     //
     // The alternative would by handing over a (loaded) SPPlaylist instead of a Playlist name.
+    
+    self.status = @"Adding filtered songs to Spotify";
     
     void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songs) {
         DLog(@"Start to add %lu songs", NSUIntToLong([songs count]));
@@ -305,6 +331,7 @@
                 }];
             }];
         }
+        if (completionBlock) completionBlock();
     };
     
     [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
