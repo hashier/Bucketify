@@ -103,11 +103,9 @@
     }
 }
 
-- (void)echoNestUserTasteprofileDelete
+- (void)echoNestUserTasteprofiledeleteTasteprofileID:(NSString *)userTasteprofileID
 {
-    if (!self.userTasteprofileID) return;
-    
-    NSDictionary *parameters = @{@"id": self.userTasteprofileID};
+    NSDictionary *parameters = @{@"id": userTasteprofileID};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
                      andParameters:parameters
@@ -121,7 +119,9 @@
                                  request.response
                                  ]);
                 }];
-    self.userTasteprofileID = nil;
+    if ([userTasteprofileID isEqualToString:self.userTasteprofileID]) {
+        self.userTasteprofileID = nil;
+    }
 }
 
 - (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID updateWithData:(NSArray *)data then:(void (^)())completionBlock
@@ -282,6 +282,14 @@
 
 - (void)spotifyAddSongURLs:(NSArray *)songs toPlaylistName:(NSString *)playlistName
 {
+    // Why is this in a block and not in a function?
+    // If this was a function I should make sure (again) that everything is loaded just to be sure no one
+    // else calls this function and hasn't waited until meta data is loaded
+    //
+    // so that this can not happen -> this is not a function but a block
+    //
+    // The alternative would by handing over a (loaded) SPPlaylist instead of a Playlist name.
+    
     void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songs) {
         DLog(@"Start to add %lu songs", NSUIntToLong([songs count]));
         for (NSString *aSong in songs) {

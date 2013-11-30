@@ -8,6 +8,7 @@
 
 #import "EchoNestTicket.h"
 #import "ENAPI.h"
+#import "common.h"
 
 @interface EchoNestTicket ()
 
@@ -44,7 +45,9 @@
     [ENAPIRequest GETWithEndpoint:@"catalog/status"
                     andParameters:parameters
                andCompletionBlock:^(ENAPIRequest *request) {
+                   DLog(@"Ticket status: %@", request.response);
                    if ([request.response[@"response"][@"percent_complete"] integerValue] == 100) {
+                       DLog(@"Ticket 100%%");
                        self.loaded = YES;
                        [self.timer invalidate];
                        self.timer = nil;

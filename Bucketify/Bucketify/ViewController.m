@@ -37,7 +37,7 @@
                                                    error:&error];
     
     if (error != nil) {
-        DLog(@"CocoaLibSpotify init failed: %@", error);
+        DLog(@"Error: CocoaLibSpotify init failed: %@", error);
         abort();
     }
     
@@ -51,6 +51,8 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    DLog(@"Info: didReceiveMemoryWarning");
 }
 
 #pragma mark - Spotify login
@@ -112,7 +114,7 @@
 
 -(void)session:(SPSession *)aSession didFailToLoginWithError:(NSError *)error
 {
-    DLog(@"Invoked by SPSession after a failed login: %@", error);
+    DLog(@"Error: Invoked by SPSession after a failed login: %@", error);
 }
 
 -(void)sessionDidLogOut:(SPSession *)aSession
@@ -122,7 +124,7 @@
 
 -(void)session:(SPSession *)aSession didEncounterNetworkError:(NSError *)error
 {
-    DLog(@"Network error: %@", error);
+    DLog(@"Error: Network error: %@", error);
 }
 
 -(void)session:(SPSession *)aSession didLogMessage:(NSString *)aMessage
