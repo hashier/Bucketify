@@ -184,7 +184,10 @@
 #pragma mark - dealloc
 
 -(void)dealloc {
-    [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
+    @try {
+        [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
+    }
+    @catch (NSException * __unused exception) {}
 }
 
 @end

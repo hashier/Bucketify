@@ -14,7 +14,7 @@
 
 @property (nonatomic, readwrite, getter=isLoaded) BOOL loaded;
 @property (strong, nonatomic) NSString *userTicket;
-@property (strong, nonatomic) NSTimer *timer;
+@property (weak, nonatomic) NSTimer *timer;
 
 @end
 
