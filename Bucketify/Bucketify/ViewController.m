@@ -181,4 +181,10 @@
     }
 }
 
+#pragma mark - dealloc
+
+-(void)dealloc {
+    [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
+}
+
 @end

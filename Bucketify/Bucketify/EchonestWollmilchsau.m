@@ -33,10 +33,11 @@
 
 - (void)filerStarredItemsByCountry:(NSString *)country
 {
-    [self echoNestUserTasteprofileUseWithCompletionBlock:^(NSString *userTasteprofileID) {
+    [self echoNestUserTasteprofileUseNewWithCompletionBlock:^(NSString *userTasteprofileID) {
         [self spotifyStarredPlaylistToEchoNestTasteprofileID:userTasteprofileID then:^{
             [self echoNestUserTasteprofileID:userTasteprofileID readStarredAndFilterByCountry:country then:^{
                 self.status = @"All done, check your Starred_Filtered playlist";
+                [self echoNestUserTasteprofileID:self.userTasteprofileID deleteWithBlock:nil];
             }];
         }];
     }];
@@ -53,7 +54,7 @@
                }];
 }
 
-- (void)echoNestUserTasteprofile
+- (void)echoNestUserTasteprofileUseNewWithCompletionBlock:(void (^)(NSString *userTasteprofileID))completionBlock
 {
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
@@ -62,12 +63,15 @@
                        if ([[self lastUser] isEqualToString:aName[@"name"]]) {
                            self.userTasteprofileID = aName[@"id"];
                            DLog(@"UserTasteprofileID is: %@", self.userTasteprofileID);
+                           [self echoNestUserTasteprofileID:self.userTasteprofileID deleteWithBlock:^{
+                               [self echoNestUserTasteprofileUseWithCompletionBlock:completionBlock];
+                           }];
                            return;
                        }
                    }
                    DLog(@"User Tasteprofile not found ):");
                    self.userTasteprofileID = nil;
-                   [self echoNestUserTasteprofileUseWithCompletionBlock:nil];
+                   [self echoNestUserTasteprofileUseWithCompletionBlock:completionBlock];
                }];
 }
 
@@ -108,8 +112,15 @@
     }
 }
 
-- (void)echoNestUserTasteprofiledeleteTasteprofileID:(NSString *)userTasteprofileID
+- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID deleteWithBlock:(void (^)())completionBlock
 {
+    DLog(@"Deleting TasteprofileID: %@", userTasteprofileID);
+    
+    if (!userTasteprofileID) {
+        DLog(@"Error: Tasteprofile is empty");
+        return;
+    }
+    
     NSDictionary *parameters = @{@"id": userTasteprofileID};
     
     [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
@@ -123,6 +134,7 @@
                                  self.userTasteprofileID,
                                  request.response
                                  ]);
+                    if (completionBlock) completionBlock();
                 }];
     if ([userTasteprofileID isEqualToString:self.userTasteprofileID]) {
         self.userTasteprofileID = nil;
