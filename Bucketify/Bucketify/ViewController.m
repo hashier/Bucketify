@@ -114,9 +114,20 @@
     DLog(@"Invoked by SPSession after a successful login.");
 }
 
--(void)session:(SPSession *)aSession didFailToLoginWithError:(NSError *)error
+- (void)session:(SPSession *)aSession didFailToLoginWithError:(NSError *)error
 {
     DLog(@"Error: Invoked by SPSession after a failed login: %@", error);
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSMutableDictionary *storedCredentials = [[defaults valueForKey:@"SpotifyUsers"] mutableCopy];
+    
+    if (storedCredentials) {
+        NSString *lastUser = storedCredentials[@"LastUser"];
+        storedCredentials[lastUser] = @"";
+        storedCredentials[@"LastUser"] = @"";
+    }
+    
+    [[SPSession sharedSession] logout:nil];
 }
 
 -(void)sessionDidLogOut:(SPSession *)aSession
