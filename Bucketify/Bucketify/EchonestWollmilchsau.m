@@ -10,6 +10,7 @@
 #import "common.h"
 #import "ENAPI.h"
 #import "EchoNestTicket.h"
+#import "config.h"
 
 @interface EchonestWollmilchsau ()
 
@@ -24,7 +25,7 @@
 {
     self = [super init];
     if (self) {
-        [ENAPIRequest setApiKey:@"***REMOVED***"];
+        [ENAPIRequest setApiKey:kEchoNestAPIKey];
     }
     return self;
 }
