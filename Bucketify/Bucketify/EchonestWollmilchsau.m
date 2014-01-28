@@ -132,7 +132,13 @@
                                  NSIntToLong(request.echonestStatusCode),
                                  request.echonestStatusMessage,
                                  request.errorMessage,
-                                 self.userTasteprofileID,
+                                 self.userTasteprofileID,   // pointer into heap
+                                                            // so this will be nill!
+                                                            //
+                                                            // stacks are captured/saved/remembered for blocks, but not
+                                                            // pointers into heap
+                                                            // well the pointer address is,
+                                                            // but not what's saved there
                                  request.response
                                  ]);
                     if (completionBlock) completionBlock();
@@ -144,6 +150,7 @@
 
 - (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID updateWithData:(NSArray *)data then:(void (^)())completionBlock
 {
+    DLog(@"Sending information to Echonest");
     self.status = @"Sending information to Echonest";
     
     NSDictionary *parameters = @{@"id": userTasteprofileID, @"data_type": @"json", @"data": [ENAPI encodeArrayAsJSON:data]};

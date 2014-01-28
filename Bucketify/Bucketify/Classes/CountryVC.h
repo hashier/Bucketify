@@ -7,8 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "CocoaLibSpotify.h"
 
-@interface ViewController : UIViewController <SPSessionDelegate, SPLoginViewControllerDelegate>
+@interface CountryVC : UIViewController
 
 @end

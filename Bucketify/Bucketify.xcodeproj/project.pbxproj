@@ -14,7 +14,6 @@
 		004481D418257318007AD1F4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 004481D318257318007AD1F4 /* main.m */; };
 		004481D818257318007AD1F4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 004481D718257318007AD1F4 /* AppDelegate.m */; };
 		004481DB18257318007AD1F4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 004481D918257318007AD1F4 /* Main.storyboard */; };
-		004481DE18257318007AD1F4 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 004481DD18257318007AD1F4 /* ViewController.m */; };
 		004481E018257318007AD1F4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 004481DF18257318007AD1F4 /* Images.xcassets */; };
 		004481E718257319007AD1F4 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004481E618257319007AD1F4 /* XCTest.framework */; };
 		004481E818257319007AD1F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004481C718257318007AD1F4 /* Foundation.framework */; };
@@ -24,6 +23,8 @@
 		00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6B18439C4500890D64 /* Base64Transcoder.c */; };
 		00503E7418439C4600890D64 /* ENAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E6E18439C4500890D64 /* ENAPI.m */; };
 		00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 00503E7118439C4500890D64 /* ENAPIRequest.m */; };
+		0068911018985FCC002C1915 /* NavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068910F18985FCC002C1915 /* NavigationViewController.m */; };
+		0068911218985FE3002C1915 /* CountryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068911118985FE3002C1915 /* CountryVC.m */; };
 		008096611894BB64000AC16A /* config.m in Sources */ = {isa = PBXBuildFile; fileRef = 008096601894BB64000AC16A /* config.m */; };
 		00E3B812184804FC009B351B /* EchonestWollmilchsau.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B811184804FC009B351B /* EchonestWollmilchsau.m */; };
 		00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B8151848D58B009B351B /* EchoNestTicket.m */; };
@@ -52,8 +53,7 @@
 		004481D618257318007AD1F4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		004481D718257318007AD1F4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		004481DA18257318007AD1F4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		004481DC18257318007AD1F4 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		004481DD18257318007AD1F4 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		004481DC18257318007AD1F4 /* CountryVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CountryVC.h; path = Classes/CountryVC.h; sourceTree = "<group>"; };
 		004481DF18257318007AD1F4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		004481E518257319007AD1F4 /* BucketifyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BucketifyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		004481E618257319007AD1F4 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -68,6 +68,9 @@
 		00503E7018439C4500890D64 /* ENAPIRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = ENAPIRequest.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		00503E7118439C4500890D64 /* ENAPIRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = ENAPIRequest.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		00503E7218439C4500890D64 /* ENLibrary-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ENLibrary-Prefix.pch"; sourceTree = "<group>"; };
+		0068910E18985FCC002C1915 /* NavigationViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NavigationViewController.h; path = Classes/NavigationViewController.h; sourceTree = "<group>"; };
+		0068910F18985FCC002C1915 /* NavigationViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NavigationViewController.m; path = Classes/NavigationViewController.m; sourceTree = "<group>"; };
+		0068911118985FE3002C1915 /* CountryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CountryVC.m; path = Classes/CountryVC.m; sourceTree = "<group>"; };
 		0080965F1894BB64000AC16A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		008096601894BB64000AC16A /* config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = config.m; sourceTree = "<group>"; };
 		00E3B810184804FC009B351B /* EchonestWollmilchsau.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EchonestWollmilchsau.h; sourceTree = "<group>"; };
@@ -209,8 +212,10 @@
 		00BFB5B61842A45E00E354E1 /* VC */ = {
 			isa = PBXGroup;
 			children = (
-				004481DC18257318007AD1F4 /* ViewController.h */,
-				004481DD18257318007AD1F4 /* ViewController.m */,
+				0068910E18985FCC002C1915 /* NavigationViewController.h */,
+				0068910F18985FCC002C1915 /* NavigationViewController.m */,
+				004481DC18257318007AD1F4 /* CountryVC.h */,
+				0068911118985FE3002C1915 /* CountryVC.m */,
 			);
 			name = VC;
 			sourceTree = "<group>";
@@ -375,13 +380,14 @@
 			files = (
 				008096611894BB64000AC16A /* config.m in Sources */,
 				00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */,
-				004481DE18257318007AD1F4 /* ViewController.m in Sources */,
+				0068911018985FCC002C1915 /* NavigationViewController.m in Sources */,
 				004481D818257318007AD1F4 /* AppDelegate.m in Sources */,
 				00E3B812184804FC009B351B /* EchonestWollmilchsau.m in Sources */,
 				004481D418257318007AD1F4 /* main.m in Sources */,
 				00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */,
 				00503E7418439C4600890D64 /* ENAPI.m in Sources */,
 				00503E7318439C4500890D64 /* Base64Transcoder.c in Sources */,
+				0068911218985FE3002C1915 /* CountryVC.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
