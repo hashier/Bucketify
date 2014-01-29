@@ -21,6 +21,8 @@
 
 @implementation EchonestWollmilchsau
 
+#pragma mark - Init
+
 - (id)init
 {
     self = [super init];

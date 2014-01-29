@@ -17,6 +17,8 @@
 
 @implementation NavigationViewController
 
+#pragma mark - Init
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -26,12 +28,14 @@
     return self;
 }
 
+#pragma mark - View
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    // spotify
+    // Spotify
     NSError *error = nil;
     [SPSession initializeSharedSessionWithApplicationKey:[NSData dataWithBytes:&g_appkey length:g_appkey_size]
                                                userAgent:@"org.loessl.Bucketify-iOS"
@@ -57,6 +61,8 @@
 
 #pragma mark - Spotify login
 
+// try to login, if no credentials are saved ->
+    // showLogin screen
 -(void)login
 {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -130,23 +136,12 @@
 
 -(void)sessionDidLogOut:(SPSession *)aSession
 {
+    DLog(@"Invoked by SPSession after a successful logout.");
+    
     [self performSelector:@selector(showLogin) withObject:nil afterDelay:0.0];
 }
 
--(void)session:(SPSession *)aSession didEncounterNetworkError:(NSError *)error
-{
-    DLog(@"Error: Network error: %@", error);
-}
-
--(void)session:(SPSession *)aSession didLogMessage:(NSString *)aMessage
-{
-    //    DLog(@"Log-worthy: %@", aMessage);
-}
-
--(void)sessionDidChangeMetadata:(SPSession *)aSession
-{
-    //    DLog(@"Called when metadata has been updated.");
-}
+#pragma mark - Communicating With The User
 
 -(void)session:(SPSession *)aSession recievedMessageForUser:(NSString *)aMessage
 {
@@ -157,6 +152,25 @@
                                           otherButtonTitles:nil];
     [alert show];
 }
+
+#pragma mark - Metadata
+
+//-(void)sessionDidChangeMetadata:(SPSession *)aSession
+//{
+//    DLog(@"Called when metadata has been updated.");
+//}
+
+#pragma mark - Networking and Debug
+
+-(void)session:(SPSession *)aSession didEncounterNetworkError:(NSError *)error
+{
+    DLog(@"Error: Network error: %@", error);
+}
+
+//-(void)session:(SPSession *)aSession didLogMessage:(NSString *)aMessage
+//{
+//    DLog(@"Log-worthy: %@", aMessage);
+//}
 
 #pragma mark - SPLoginViewControllerDelegate Methods
 
