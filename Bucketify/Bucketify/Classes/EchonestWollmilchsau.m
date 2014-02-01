@@ -39,8 +39,9 @@
     [self echoNestUserTasteprofileUseNewWithCompletionBlock:^(NSString *userTasteprofileID) {
         [self spotifyStarredPlaylistToEchoNestTasteprofileID:userTasteprofileID then:^{
             [self echoNestUserTasteprofileID:userTasteprofileID readStarredAndFilterByCountry:country then:^{
-                self.status = @"All done, check your Starred_Filtered playlist";
-                [self echoNestUserTasteprofileID:self.userTasteprofileID deleteWithBlock:nil];
+                self.status = @"All done, check your Starred_Filtered playlist in Spotify";
+                [self echoNestDeleteUserTasteprofileID:userTasteprofileID withBlock:nil];
+                DLog(@"Clean up (userTasteprofileID: %@ deleted) done", userTasteprofileID);
             }];
         }];
     }];
@@ -48,7 +49,7 @@
 
 #pragma mark - EchoNest
 
-- (void)echoNestUserTasteprofileLists
+- (void)echoNestDumpUserTasteprofileLists
 {
     [ENAPIRequest GETWithEndpoint:@"catalog/list"
                     andParameters:nil
@@ -65,14 +66,14 @@
                    for (NSDictionary *aName in request.response[@"response"][@"catalogs"]) {
                        if ([[self lastUser] isEqualToString:aName[@"name"]]) {
                            self.userTasteprofileID = aName[@"id"];
-                           DLog(@"UserTasteprofileID is: %@", self.userTasteprofileID);
-                           [self echoNestUserTasteprofileID:self.userTasteprofileID deleteWithBlock:^{
+                           DLog(@"UserTasteprofileID is: %@, going to delete it", self.userTasteprofileID);
+                           [self echoNestDeleteUserTasteprofileID:self.userTasteprofileID withBlock:^{
                                [self echoNestUserTasteprofileUseWithCompletionBlock:completionBlock];
                            }];
                            return;
                        }
                    }
-                   DLog(@"User Tasteprofile not found ):");
+                   DLog(@"User Tasteprofile not found, don't have to delete it");
                    self.userTasteprofileID = nil;
                    [self echoNestUserTasteprofileUseWithCompletionBlock:completionBlock];
                }];
@@ -100,14 +101,14 @@
                                                          lastWord = substring;
                                                          *stop = YES;
                                                      }];
-                            DLog(@"userTasteprofileID: %@", lastWord);
+                            DLog(@"userTasteprofileID: %@, existed and going to be reused", lastWord);
                             self.userTasteprofileID = lastWord;
                             
                             if (completionBlock) completionBlock(self.userTasteprofileID);
                         } else {
                             // no userTasteprofileID existed, we just created a new one
-                            NSString *catalogId = (NSString *)[request.response valueForKeyPath:@"response.id"];
-                            self.userTasteprofileID = catalogId;
+                            self.userTasteprofileID = (NSString *)[request.response valueForKeyPath:@"response.id"];
+                            DLog(@"new userTasteprofileID: %@ created", self.userTasteprofileID);
                             
                             if (completionBlock) completionBlock(self.userTasteprofileID);
                         }
@@ -115,7 +116,7 @@
     }
 }
 
-- (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID deleteWithBlock:(void (^)())completionBlock
+- (void)echoNestDeleteUserTasteprofileID:(NSString *)userTasteprofileID withBlock:(void (^)())completionBlock
 {
     DLog(@"Deleting TasteprofileID: %@", userTasteprofileID);
     
@@ -152,6 +153,8 @@
 
 - (void)echoNestUserTasteprofileID:(NSString *)userTasteprofileID updateWithData:(NSArray *)data then:(void (^)())completionBlock
 {
+    // TODO: Maybe split up the data in multiple requests?
+    
     DLog(@"Sending information to Echonest");
     self.status = @"Sending information to Echonest";
     
