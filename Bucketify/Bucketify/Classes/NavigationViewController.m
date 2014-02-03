@@ -153,8 +153,8 @@
     [alert show];
 }
 
-#pragma mark - Metadata
-
+//#pragma mark - Metadata
+//
 //-(void)sessionDidChangeMetadata:(SPSession *)aSession
 //{
 //    DLog(@"Called when metadata has been updated.");
