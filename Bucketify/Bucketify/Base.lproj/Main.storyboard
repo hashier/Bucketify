@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
     <scenes>
-        <!--View Controller - Settings-->
+        <!--Settings View Controller - Settings-->
         <scene sceneID="Lve-c0-bDO">
             <objects>
-                <viewController id="DzA-w4-zHu" sceneMemberID="viewController">
+                <viewController id="DzA-w4-zHu" customClass="SettingsViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="uSZ-Ki-M6h"/>
                         <viewControllerLayoutGuide type="bottom" id="Pzl-Kj-JFP"/>
@@ -22,6 +22,9 @@
                                 <state key="normal" title="Log out of Spotify">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="logoutButton" destination="DzA-w4-zHu" eventType="touchUpInside" id="9Xb-VV-MUD"/>
+                                </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Out Playlist" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kdh-bj-Xd5">
                                 <rect key="frame" x="9" y="274" width="88" height="21"/>
