@@ -27,7 +27,16 @@
 {
     self = [super init];
     if (self) {
-        [ENAPIRequest setApiKey:kEchoNestAPIKey];
+        if ([kEchoNestAPIKey isEqualToString:@""]) {
+            UIAlertView *alert =[[UIAlertView alloc ] initWithTitle:@"Key missing"
+                                                            message:@"Echonest Key missing; Terminating"
+                                                           delegate:self
+                                                  cancelButtonTitle:@"Ok"
+                                                  otherButtonTitles:nil];
+            [alert show];
+        } else {
+            [ENAPIRequest setApiKey:kEchoNestAPIKey];
+        }
     }
     return self;
 }
