@@ -17,7 +17,7 @@
 
 @implementation NavigationViewController
 
-#pragma mark - Init
+#pragma mark - init
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -52,6 +52,8 @@
     
     [[SPSession sharedSession] setDelegate:self];
 }
+
+#pragma mark - Memory
 
 - (void)didReceiveMemoryWarning
 {

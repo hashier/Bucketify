@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0037F9C3189FE2BD00DAA432 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0037F9C2189FE2BD00DAA432 /* SettingsViewController.m */; };
+		0037F9C618A067C100DAA432 /* SelectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0037F9C518A067C100DAA432 /* SelectViewController.m */; };
 		004481C818257318007AD1F4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004481C718257318007AD1F4 /* Foundation.framework */; };
 		004481CA18257318007AD1F4 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004481C918257318007AD1F4 /* CoreGraphics.framework */; };
 		004481CC18257318007AD1F4 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 004481CB18257318007AD1F4 /* UIKit.framework */; };
@@ -45,6 +46,8 @@
 /* Begin PBXFileReference section */
 		0037F9C1189FE2BD00DAA432 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SettingsViewController.h; path = Classes/SettingsViewController.h; sourceTree = "<group>"; };
 		0037F9C2189FE2BD00DAA432 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SettingsViewController.m; path = Classes/SettingsViewController.m; sourceTree = "<group>"; };
+		0037F9C418A067C100DAA432 /* SelectViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectViewController.h; path = Classes/SelectViewController.h; sourceTree = "<group>"; };
+		0037F9C518A067C100DAA432 /* SelectViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectViewController.m; path = Classes/SelectViewController.m; sourceTree = "<group>"; };
 		004481C418257318007AD1F4 /* Bucketify.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Bucketify.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		004481C718257318007AD1F4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		004481C918257318007AD1F4 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -215,6 +218,8 @@
 		00BFB5B61842A45E00E354E1 /* VC */ = {
 			isa = PBXGroup;
 			children = (
+				0037F9C418A067C100DAA432 /* SelectViewController.h */,
+				0037F9C518A067C100DAA432 /* SelectViewController.m */,
 				0037F9C1189FE2BD00DAA432 /* SettingsViewController.h */,
 				0037F9C2189FE2BD00DAA432 /* SettingsViewController.m */,
 				0068910E18985FCC002C1915 /* NavigationViewController.h */,
@@ -383,6 +388,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0037F9C618A067C100DAA432 /* SelectViewController.m in Sources */,
 				008096611894BB64000AC16A /* config.m in Sources */,
 				00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */,
 				0068911018985FCC002C1915 /* NavigationViewController.m in Sources */,

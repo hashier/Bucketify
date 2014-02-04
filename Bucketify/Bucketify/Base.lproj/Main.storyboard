@@ -77,10 +77,10 @@
             </objects>
             <point key="canvasLocation" x="139" y="-99"/>
         </scene>
-        <!--Table View Controller - Spotify Playlist Manager-->
+        <!--Select View Controller - Spotify Playlist Manager-->
         <scene sceneID="kly-Fw-Nxg">
             <objects>
-                <tableViewController id="HxJ-0r-oIn" sceneMemberID="viewController">
+                <tableViewController id="HxJ-0r-oIn" customClass="SelectViewController" sceneMemberID="viewController">
                     <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="150" sectionHeaderHeight="22" sectionFooterHeight="22" id="MU6-6a-Fq3">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

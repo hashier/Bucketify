@@ -24,11 +24,15 @@
 
 @implementation CountryVC
 
+#pragma mark - View
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
 }
+
+#pragma mark - Memory
 
 - (void)didReceiveMemoryWarning
 {
@@ -38,7 +42,7 @@
     DLog(@"Info: didReceiveMemoryWarning");
 }
 
-#pragma mark - Buttons
+#pragma mark - Actions
 
 - (IBAction)doItButton:(id)sender
 {
