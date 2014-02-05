@@ -1,0 +1,22 @@
+# Filter
+
+* Filter playlist by genre
+* Filter playlist by year
+* Filter playlist by mood
+* Filter playlist by BMP (beats per minute)
+
+
+# Utilities
+
+* Count (how many songs are there in the playlist?)
+* Backup playlist
+* Restore playlist
+* Randomise playlist (Spotifys random seems sometimes not random enough to me)
+* Generate playlist with all songs from all playlists
+
+
+# Fix
+## Settings
+
+* Text label in settings -> never delete stuff, always add
+* Put default values in the two text boxes
