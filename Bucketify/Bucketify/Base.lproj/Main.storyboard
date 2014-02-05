@@ -39,13 +39,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Starred_Filtered" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pkB-VR-a5x">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Starred_Filtered" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pkB-VR-a5x">
                                 <rect key="frame" x="150" y="269" width="150" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Starred" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hYk-lk-qel">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Starred" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hYk-lk-qel">
                                 <rect key="frame" x="150" y="231" width="150" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -54,18 +54,27 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The filtered songs will be added to this playlist instead of replacing the playlist." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="NTp-gI-vRX">
+                                <rect key="frame" x="20" y="307" width="280" height="61"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="hYk-lk-qel" firstAttribute="trailing" secondItem="pkB-VR-a5x" secondAttribute="trailing" id="1AJ-Kc-IfA"/>
                             <constraint firstAttribute="centerY" secondItem="pkB-VR-a5x" secondAttribute="centerY" id="6H0-Qu-qoK"/>
+                            <constraint firstItem="NTp-gI-vRX" firstAttribute="leading" secondItem="JPN-yz-AxK" secondAttribute="leading" constant="20" symbolic="YES" id="9L3-Q8-9qo"/>
                             <constraint firstItem="Pzl-Kj-JFP" firstAttribute="top" secondItem="8yb-Is-ghS" secondAttribute="bottom" constant="20" symbolic="YES" id="Gcp-aA-doy"/>
                             <constraint firstItem="K9c-i1-6lz" firstAttribute="leading" secondItem="JPN-yz-AxK" secondAttribute="leading" constant="9" id="UG5-RQ-DIL"/>
                             <constraint firstItem="pkB-VR-a5x" firstAttribute="top" secondItem="hYk-lk-qel" secondAttribute="bottom" constant="8" symbolic="YES" id="Vcy-ID-uLa"/>
                             <constraint firstItem="hYk-lk-qel" firstAttribute="width" secondItem="pkB-VR-a5x" secondAttribute="width" id="Xeb-Nq-BB3"/>
                             <constraint firstAttribute="trailing" secondItem="8yb-Is-ghS" secondAttribute="trailing" constant="20" symbolic="YES" id="bW1-xL-cfd"/>
                             <constraint firstAttribute="centerY" secondItem="Kdh-bj-Xd5" secondAttribute="centerY" id="cCT-RN-vc5"/>
+                            <constraint firstAttribute="trailing" secondItem="NTp-gI-vRX" secondAttribute="trailing" constant="20" symbolic="YES" id="fdK-pE-pzA"/>
                             <constraint firstItem="8yb-Is-ghS" firstAttribute="leading" secondItem="JPN-yz-AxK" secondAttribute="leading" constant="20" symbolic="YES" id="mTt-E6-mxq"/>
+                            <constraint firstItem="NTp-gI-vRX" firstAttribute="top" secondItem="Kdh-bj-Xd5" secondAttribute="bottom" constant="12" id="tN1-Br-eh4"/>
                             <constraint firstAttribute="trailing" secondItem="pkB-VR-a5x" secondAttribute="trailing" constant="20" symbolic="YES" id="vlO-of-ZTc"/>
                             <constraint firstItem="Kdh-bj-Xd5" firstAttribute="leading" secondItem="JPN-yz-AxK" secondAttribute="leading" constant="9" id="xgc-sj-sMW"/>
                             <constraint firstItem="hYk-lk-qel" firstAttribute="centerY" secondItem="K9c-i1-6lz" secondAttribute="centerY" constant="0.5" id="ysa-WZ-shu"/>
@@ -75,7 +84,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dkj-7m-alt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="-99"/>
+            <point key="canvasLocation" x="188" y="-104"/>
         </scene>
         <!--Select View Controller - Spotify Playlist Manager-->
         <scene sceneID="kly-Fw-Nxg">
