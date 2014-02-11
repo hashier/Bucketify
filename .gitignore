@@ -78,3 +78,5 @@ Pods
 *.xcworkspace/
 
 appkey.c
+
+.idea/
