@@ -11,7 +11,9 @@
 
 @interface EchoNestTicket : NSObject <SPAsyncLoading>
 
-@property (strong, nonatomic) NSString *ticket;
+@property (strong, nonatomic, readonly) NSString *ticket;
+@property (nonatomic, readonly, getter=isLoaded) BOOL loaded;
+
 - (id)initWithTicket:(NSString *)ticket;
 
 @end
