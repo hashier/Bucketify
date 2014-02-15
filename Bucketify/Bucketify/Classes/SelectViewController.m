@@ -36,7 +36,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
+
+    // Fixes a bug in iOS7 that the row doesn't get deselected if swiped left fast
     [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:animated];
 }
 
