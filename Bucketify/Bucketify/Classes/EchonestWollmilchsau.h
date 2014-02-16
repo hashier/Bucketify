@@ -11,7 +11,9 @@
 
 @interface EchonestWollmilchsau : NSObject
 
-- (void)filerStarredItemsByCountry:(NSString *)country;
 @property (strong, readonly, nonatomic) NSString *status;
+
+- (void)filerStarredItemsByCountry:(NSString *)country;
+- (void)filerPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist;
 
 @end

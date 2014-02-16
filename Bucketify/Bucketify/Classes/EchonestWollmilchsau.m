@@ -56,6 +56,40 @@
     }];
 }
 
+- (void)filerPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist
+{
+    [self echoNestUseNewUserTasteprofileWithCompletionBlock:^(NSString *userTasteprofileID) {
+        [self spotifyGetItemsFromPlaylistName:playlistName then:^(NSArray *items) {
+            [self echoNestUpdateArtistUserTasteprofileID:userTasteprofileID withData:items then:^{
+                [self echoNestReadUserTasteprofileID:userTasteprofileID andFilterByCountry:country then:^(NSArray *filtered) {
+                    [self spotifyAddSongURLs:filtered toPlaylistName:toPlaylist then:^{
+                        [self echoNestDeleteUserTasteprofileID:userTasteprofileID withBlock:^{
+                            DLog(@"Clean up (userTasteprofileID: %@ deleted) done", userTasteprofileID);
+                        }];
+                        self.status = @"All done, check your filtered playlist in Spotify";
+                    }];
+                }];
+            }];
+        }];
+    }];
+}
+
+- (void)echoNestUseNewUserTasteprofileWithCompletionBlock:(void (^)(NSString *))pFunction {
+
+}
+
+- (void)spotifyGetItemsFromPlaylistName:(NSString *)name then:(void (^)(NSArray *))then {
+
+}
+
+- (void)echoNestUpdateArtistUserTasteprofileID:(NSString *)id withData:(NSArray *)data then:(void (^)())then {
+
+}
+
+- (void)echoNestReadUserTasteprofileID:(NSString *)id andFilterByCountry:(NSString *)country then:(void (^)(NSArray *))then {
+
+}
+
 #pragma mark - EchoNest
 
 - (void)echoNestDumpUserTasteprofileLists
@@ -118,7 +152,7 @@
                             // no userTasteprofileID existed, we just created a new one
                             self.userTasteprofileID = (NSString *)[request.response valueForKeyPath:@"response.id"];
                             DLog(@"new userTasteprofileID: %@ created", self.userTasteprofileID);
-                            
+
                             if (completionBlock) completionBlock(self.userTasteprofileID);
                         }
                     }];
@@ -286,18 +320,19 @@
                         }
                         for (aArtist in anTrack.artists) {
                             aURL = [self spotifyString:[aArtist.spotifyURL absoluteString]];
+                            //TODO: Make method for stripping chars
                             [allArtists addObject:@{@"item": @{@"item_id": [aURL stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": aURL}}];
                         }
                         j++;
                     }
-                    
+
                     //        DLog(@"%@", allSongs);
                     DLog(@"Total items processed      : %d", i);
                     DLog(@"Total that were nil        : %d", i - j);
                     DLog(@"Total number of artists    : %lu", NSUIntToLong([allArtists count]));
                     NSArray *returnArray = [NSArray arrayWithArray:[[NSSet setWithArray:allArtists] allObjects]];
                     DLog(@"Duplicates removed         : %lu", NSUIntToLong([returnArray count]));
-                    
+
                     [self echoNestUserTasteprofileID:userTasteprofileID updateWithData:returnArray then:completionBlock];
                 }];
             }];
