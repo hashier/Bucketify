@@ -55,7 +55,9 @@
                               forKeyPath:@"status"
                                  options:0
                                  context:nil];
-    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
+//    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
+//    [self.filterStarredItems filerPlaylistName:@"Starred" byCountry:@"Sweden" toPlaylist:@"test555"];
+    [self.filterStarredItems filerPlaylistName:@"test555" byCountry:@"Sweden" toPlaylist:@"test666"];
 }
 
 #pragma mark - KVO/KVC
