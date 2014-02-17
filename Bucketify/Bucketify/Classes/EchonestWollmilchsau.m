@@ -127,7 +127,7 @@
 - (void)spotifyGetTracksFromPlaylistName:(NSString *)name then:(void (^)(NSArray *items))completionBlock {
     self.status = @"Waiting for Spotify information";
 
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedSession, NSArray *notLoadedSession) {
 
         [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].userPlaylists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
 
@@ -322,9 +322,9 @@
     
     self.status = @"Adding filtered songs to Spotify";
     
-    void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songs) {
-        DLog(@"Start to add %lu songs", NSUIntToLong([songs count]));
-        for (NSString *aSong in songs) {
+    void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songToAdd) {
+        DLog(@"Start to add %lu songToAdd", NSUIntToLong([songToAdd count]));
+        for (NSString *aSong in songToAdd) {
             DLog(@"Try to add song: %@ to %@", aSong, thePlaylist.name);
             [SPTrack trackForTrackURL:[NSURL URLWithString:aSong] inSession:[SPSession sharedSession] callback:^(SPTrack *aTrack) {
                 [thePlaylist addItem:aTrack atIndex:0 callback:^(NSError *error) {
