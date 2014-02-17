@@ -1,25 +1,25 @@
 //
-//  EchonestWollmilchsau.m
+//  EchoNestWollmilchsau.m
 //  Bucketify
 //
 //  Created by Christopher Loessl on 29/11/13.
 //  Copyright (c) 2013 Christopher Loessl. All rights reserved.
 //
 
-#import "EchonestWollmilchsau.h"
+#import "EchoNestWollmilchsau.h"
 #import "common.h"
 #import "ENAPI.h"
 #import "EchoNestTicket.h"
 #import "config.h"
 
-@interface EchonestWollmilchsau ()
+@interface EchoNestWollmilchsau ()
 
 @property (strong, nonatomic) NSString *userTasteProfileID;
 @property (strong, readwrite, nonatomic) NSString *status;
 
 @end
 
-@implementation EchonestWollmilchsau
+@implementation EchoNestWollmilchsau
 
 #pragma mark - Init
 
