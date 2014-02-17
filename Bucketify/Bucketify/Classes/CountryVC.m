@@ -11,12 +11,11 @@
 
 #import "CountryVC.h"
 #import "common.h"
-#import "EchonestWollmilchsau.h"
-#import "EchoNestTicket.h"
+#import "EchoNestWollmilchsau.h"
 
 @interface CountryVC ()
 
-@property (strong, nonatomic) EchonestWollmilchsau *filterStarredItems;
+@property (strong, nonatomic) EchoNestWollmilchsau *filterStarredItems;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
 @property (weak, nonatomic) IBOutlet UITextField *countryTextField;
 
@@ -50,12 +49,14 @@
  
 
     [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
-    self.filterStarredItems = [[EchonestWollmilchsau alloc] init];
+    self.filterStarredItems = [[EchoNestWollmilchsau alloc] init];
     [self.filterStarredItems addObserver:self
                               forKeyPath:@"status"
                                  options:0
                                  context:nil];
-    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
+//    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
+//    [self.filterStarredItems filerPlaylistName:@"Starred" byCountry:@"Sweden" toPlaylist:@"test555"];
+    [self.filterStarredItems filterPlaylistName:@"test555" byCountry:@"Sweden" toPlaylist:@"test666"];
 }
 
 #pragma mark - KVO/KVC
