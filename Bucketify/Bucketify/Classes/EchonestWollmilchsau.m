@@ -58,7 +58,7 @@
     }];
 }
 
-#pragma mark - Refactoring
+#pragma mark - EchoNest
 
 - (void)echoNestUseNewUserTasteProfileWithCompletionBlock:(void (^)(NSString *filtered))completionBlock {
     if (self.userTasteProfileID) {
@@ -124,60 +124,40 @@
     }
 }
 
-- (void)spotifyGetTracksFromPlaylistName:(NSString *)name then:(void (^)(NSArray *items))completionBlock {
-    self.status = @"Waiting for Spotify information";
-
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedSession, NSArray *notLoadedSession) {
-
-        [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].userPlaylists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
-
-            DLog(@"Session loaded");
-
-            NSMutableArray *playlists = [NSMutableArray array];
-            if ([name isEqualToString:@"Starred"]) {
-                [playlists addObject:[SPSession sharedSession].starredPlaylist];
-            } else {
-                [playlists addObjectsFromArray:[SPSession sharedSession].userPlaylists.flattenedPlaylists];
-            }
-
-            [SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
-
-                DLog(@"Playlist(s) not loaded: %@", notLoadedPlaylists);
-
-                NSArray *tracks;
-
-                // if only one playlist loaded, check if it's the starred one
-                // starred one does _not_ have a name, therefore check url
-                if ([loadedPlaylists count] == 1) {
-                    SPPlaylist *aPlaylist = [loadedPlaylists firstObject];
-                    if ([[aPlaylist.spotifyURL absoluteString] rangeOfString:@"starred" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                        tracks = [self tracksFromPlaylistItems:aPlaylist.items];
-                    }
-                }
-                // iterate through all loaded playlists and check the name
-                for (SPPlaylist *aPlaylist in loadedPlaylists) {
-                    DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
-                    if ([aPlaylist.name isEqualToString:name]) {
-                        tracks = [self tracksFromPlaylistItems:aPlaylist.items];
-                        break;
-                    }
-                }
-
-                if ([tracks count] == 0) {
-                    DLog(@"Warning: Didn't find the given playlist's name or no songs in it");
-                    self.status = @"Didn't find the given playlist or no songs in it";
-                    return;
-                }
-
-                [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
-
-                    DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
-
-                    if (completionBlock) completionBlock(loadedTracks);
+- (void)echoNestDeleteUserTasteProfileID:(NSString *)userTasteProfileID then:(void (^)())completionBlock
+{
+    DLog(@"Deleting TasteProfileID: %@", userTasteProfileID);
+    
+    if (!userTasteProfileID) {
+        DLog(@"Error: TasteProfile is empty");
+        return;
+    }
+    
+    NSDictionary *parameters = @{@"id": userTasteProfileID};
+    
+    [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
+                     andParameters:parameters
+                andCompletionBlock:^(ENAPIRequest *request) {
+                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\nWhole request: %@",
+                                 NSIntToLong(request.httpResponseCode),
+                                 NSIntToLong(request.echonestStatusCode),
+                                 request.echonestStatusMessage,
+                                 request.errorMessage,
+                                 self.userTasteProfileID,   // pointer into heap
+                                                            // so this will be null!
+                                                            //
+                                                            // stacks are captured/saved/remembered for blocks, but not
+                                                            // pointers into heap
+                                                            // well the pointer address is,
+                                                            // but not what's saved there
+                                 request.response
+                                 ]);
+                    DLog(@"Clean up (userTasteProfileID: %@ deleted) done", userTasteProfileID);
+                    if (completionBlock) completionBlock();
                 }];
-            }];
-        }];
-    }];
+    if ([userTasteProfileID isEqualToString:self.userTasteProfileID]) {
+        self.userTasteProfileID = nil;
+    }
 }
 
 - (void)echoNestUpdateArtistUserTasteProfileID:(NSString *)id withTracks:(NSArray *)tracks then:(void (^)())completionBlock {
@@ -270,45 +250,63 @@
                }];
 }
 
-#pragma mark - EchoNest
-
-- (void)echoNestDeleteUserTasteProfileID:(NSString *)userTasteProfileID then:(void (^)())completionBlock
-{
-    DLog(@"Deleting TasteProfileID: %@", userTasteProfileID);
-    
-    if (!userTasteProfileID) {
-        DLog(@"Error: TasteProfile is empty");
-        return;
-    }
-    
-    NSDictionary *parameters = @{@"id": userTasteProfileID};
-    
-    [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
-                     andParameters:parameters
-                andCompletionBlock:^(ENAPIRequest *request) {
-                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\nWhole request: %@",
-                                 NSIntToLong(request.httpResponseCode),
-                                 NSIntToLong(request.echonestStatusCode),
-                                 request.echonestStatusMessage,
-                                 request.errorMessage,
-                                 self.userTasteProfileID,   // pointer into heap
-                                                            // so this will be null!
-                                                            //
-                                                            // stacks are captured/saved/remembered for blocks, but not
-                                                            // pointers into heap
-                                                            // well the pointer address is,
-                                                            // but not what's saved there
-                                 request.response
-                                 ]);
-                    DLog(@"Clean up (userTasteProfileID: %@ deleted) done", userTasteProfileID);
-                    if (completionBlock) completionBlock();
-                }];
-    if ([userTasteProfileID isEqualToString:self.userTasteProfileID]) {
-        self.userTasteProfileID = nil;
-    }
-}
-
 #pragma mark - Spotify
+
+- (void)spotifyGetTracksFromPlaylistName:(NSString *)name then:(void (^)(NSArray *items))completionBlock {
+    self.status = @"Waiting for Spotify information";
+
+    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedSession, NSArray *notLoadedSession) {
+
+        [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].userPlaylists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
+
+            DLog(@"Session loaded");
+
+            NSMutableArray *playlists = [NSMutableArray array];
+            if ([name isEqualToString:@"Starred"]) {
+                [playlists addObject:[SPSession sharedSession].starredPlaylist];
+            } else {
+                [playlists addObjectsFromArray:[SPSession sharedSession].userPlaylists.flattenedPlaylists];
+            }
+
+            [SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
+
+                DLog(@"Playlist(s) not loaded: %@", notLoadedPlaylists);
+
+                NSArray *tracks;
+
+                // if only one playlist loaded, check if it's the starred one
+                // starred one does _not_ have a name, therefore check url
+                if ([loadedPlaylists count] == 1) {
+                    SPPlaylist *aPlaylist = [loadedPlaylists firstObject];
+                    if ([[aPlaylist.spotifyURL absoluteString] rangeOfString:@"starred" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                        tracks = [self tracksFromPlaylistItems:aPlaylist.items];
+                    }
+                }
+                // iterate through all loaded playlists and check the name
+                for (SPPlaylist *aPlaylist in loadedPlaylists) {
+                    DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
+                    if ([aPlaylist.name isEqualToString:name]) {
+                        tracks = [self tracksFromPlaylistItems:aPlaylist.items];
+                        break;
+                    }
+                }
+
+                if ([tracks count] == 0) {
+                    DLog(@"Warning: Didn't find the given playlist's name or no songs in it");
+                    self.status = @"Didn't find the given playlist or no songs in it";
+                    return;
+                }
+
+                [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+
+                    DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
+
+                    if (completionBlock) completionBlock(loadedTracks);
+                }];
+            }];
+        }];
+    }];
+}
 
 - (void)spotifyAddSongURLs:(NSArray *)songs toPlaylistName:(NSString *)playlistName then:(void (^)())completionBlock
 {
