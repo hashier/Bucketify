@@ -13,7 +13,6 @@
 
 @property (strong, readonly, nonatomic) NSString *status;
 
-- (void)filerStarredItemsByCountry:(NSString *)country;
-- (void)filerPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist;
+- (void)filterPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist;
 
 @end

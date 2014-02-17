@@ -56,7 +56,7 @@
     }];
 }
 
-- (void)filerPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist {
+- (void)filterPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist {
     [self echoNestUseNewUserTasteProfileWithCompletionBlock:^(NSString *userTasteProfileID) {
         [self spotifyGetTracksFromPlaylistName:playlistName then:^(NSArray *tracks) {
             [self echoNestUpdateArtistUserTasteProfileID:userTasteProfileID withTracks:tracks then:^{
