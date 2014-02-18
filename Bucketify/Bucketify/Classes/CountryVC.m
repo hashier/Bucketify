@@ -46,9 +46,11 @@
 - (IBAction)doItButton:(id)sender
 {
     DLog(@"Button pressed (:");
- 
 
-    [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
+    @try {
+        [self.filterStarredItems removeObserver:self forKeyPath:@"status"];
+    }
+    @catch (NSException * __unused exception) {}
     self.filterStarredItems = [[EchoNestWollmilchsau alloc] init];
     [self.filterStarredItems addObserver:self
                               forKeyPath:@"status"
