@@ -7,3 +7,5 @@
 //
 
 NSString *const kEchoNestAPIKey = @"";
+NSString *const kInPlaylist = @"inPlaylist";
+NSString *const kOutPlaylist = @"outPlaylist";

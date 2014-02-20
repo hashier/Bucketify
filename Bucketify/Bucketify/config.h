@@ -10,5 +10,8 @@
 #define hashier_config_h
 
 FOUNDATION_EXPORT NSString *const kEchoNestAPIKey;
+FOUNDATION_EXPORT NSString *const kInPlaylist;
+FOUNDATION_EXPORT NSString *const kOutPlaylist;
+
 
 #endif

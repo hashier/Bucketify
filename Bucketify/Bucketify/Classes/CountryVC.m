@@ -12,6 +12,7 @@
 #import "CountryVC.h"
 #import "common.h"
 #import "EchoNestWollmilchsau.h"
+#import "config.h"
 
 @interface CountryVC ()
 
@@ -45,6 +46,7 @@
 
 - (IBAction)doItButton:(id)sender
 {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     DLog(@"Button pressed (:");
 
     @try {
@@ -58,7 +60,8 @@
                                  context:nil];
 //    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
 //    [self.filterStarredItems filerPlaylistName:@"Starred" byCountry:@"Sweden" toPlaylist:@"test555"];
-    [self.filterStarredItems filterPlaylistName:@"test555" byCountry:@"Sweden" toPlaylist:@"test666"];
+//    [self.filterStarredItems filterPlaylistName:@"test555" byCountry:@"Sweden" toPlaylist:@"test666"];
+    [self.filterStarredItems filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:@"Sweden" toPlaylist:[userDefaults stringForKey:kOutPlaylist]];
 }
 
 #pragma mark - KVO/KVC

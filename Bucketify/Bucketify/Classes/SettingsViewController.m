@@ -9,9 +9,7 @@
 #import "SettingsViewController.h"
 #import "common.h"
 #import "CocoaLibSpotify.h"
-
-static NSString *const kInPlaylist = @"inPlaylist";
-static NSString *const kOutPlaylist = @"outPlaylist";
+#import "config.h"
 
 @interface SettingsViewController ()
 @property (weak, nonatomic) IBOutlet UITextField *textFieldInPlaylist;
