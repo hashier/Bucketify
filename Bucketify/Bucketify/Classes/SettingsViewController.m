@@ -10,8 +10,12 @@
 #import "common.h"
 #import "CocoaLibSpotify.h"
 
-@interface SettingsViewController ()
+static NSString *const kInPlaylist = @"inPlaylist";
+static NSString *const kOutPlaylist = @"outPlaylist";
 
+@interface SettingsViewController ()
+@property (weak, nonatomic) IBOutlet UITextField *textFieldInPlaylist;
+@property (weak, nonatomic) IBOutlet UITextField *textFieldOutPlaylist;
 @end
 
 @implementation SettingsViewController
@@ -33,6 +37,21 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+
+    self.textFieldInPlaylist.delegate = self;
+    self.textFieldOutPlaylist.delegate = self;
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+    [super viewDidAppear:animated];
+
+    [userDefaults registerDefaults:@{kInPlaylist: @"Starred", kOutPlaylist: @"Starred_Filtered"}];
+
+    self.textFieldInPlaylist.text = [userDefaults stringForKey:kInPlaylist];
+    self.textFieldOutPlaylist.text = [userDefaults stringForKey:kOutPlaylist];
+
 }
 
 #pragma mark - Memory
@@ -43,11 +62,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
+}
+
 #pragma mark - Actions
 
 - (IBAction)logoutButton {
     DLog(@"Log out of Spotify");
     [[SPSession sharedSession] logout:nil];
 }
+
+- (IBAction)editDidEnd:(UITextField *)sender {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+    if (sender == self.textFieldInPlaylist) {
+        [userDefaults setObject:self.textFieldInPlaylist.text forKey:kInPlaylist];
+    } else if (sender == self.textFieldOutPlaylist) {
+        [userDefaults setObject:self.textFieldOutPlaylist.text forKey:kOutPlaylist];
+    }
+
+    [userDefaults synchronize];
+}
+
 
 @end

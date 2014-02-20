@@ -39,13 +39,16 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Starred_Filtered" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pkB-VR-a5x">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="eg. Starred_Filtered" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pkB-VR-a5x">
                                 <rect key="frame" x="150" y="269" width="150" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="editDidEnd:" destination="DzA-w4-zHu" eventType="editingDidEnd" id="j71-LP-7Gm"/>
+                                </connections>
                             </textField>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Starred" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hYk-lk-qel">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="eg. Starred" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hYk-lk-qel">
                                 <rect key="frame" x="150" y="231" width="150" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -53,6 +56,9 @@
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="editDidEnd:" destination="DzA-w4-zHu" eventType="editingDidEnd" id="vgf-Tk-w2g"/>
+                                </connections>
                             </textField>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The filtered songs will be added to this playlist instead of replacing the playlist." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="NTp-gI-vRX">
                                 <rect key="frame" x="20" y="307" width="280" height="61"/>
@@ -81,6 +87,10 @@
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Settings" id="N9a-cz-fsY"/>
+                    <connections>
+                        <outlet property="textFieldInPlaylist" destination="hYk-lk-qel" id="QZ5-Op-q5i"/>
+                        <outlet property="textFieldOutPlaylist" destination="pkB-VR-a5x" id="cNE-s4-mvo"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dkj-7m-alt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
