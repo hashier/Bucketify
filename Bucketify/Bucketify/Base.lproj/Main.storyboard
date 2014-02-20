@@ -141,34 +141,12 @@ Filter your playlist by genre.</string>
                                             <segue destination="gbd-Br-3y1" kind="push" id="kdo-fv-etB"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="6EW-Kc-afa">
-                                        <rect key="frame" x="0.0" y="386" width="320" height="150"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6EW-Kc-afa" id="v3n-sl-pOC">
-                                            <rect key="frame" x="0.0" y="0.0" width="320" height="149"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="EEc-4z-Vku">
-                                                    <rect key="frame" x="20" y="20" width="280" height="109"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <string key="text">Year
-
-Filter the songs in your playlist by year.</string>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                        <connections>
-                                            <segue destination="ivY-kG-2Ec" kind="push" id="XJm-54-jBb"/>
-                                        </connections>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                             <tableViewSection headerTitle="Utilities" id="HO9-eH-45t">
                                 <cells>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="GXv-MH-8dA">
-                                        <rect key="frame" x="0.0" y="558" width="320" height="150"/>
+                                        <rect key="frame" x="0.0" y="408" width="320" height="150"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GXv-MH-8dA" id="DNN-mx-BEb">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="149"/>
@@ -190,7 +168,7 @@ Spotify's client sometimes hides songs, here you can find out how many songs are
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="1GT-VA-BUH">
-                                        <rect key="frame" x="0.0" y="708" width="320" height="150"/>
+                                        <rect key="frame" x="0.0" y="558" width="320" height="150"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1GT-VA-BUH" id="v5b-tM-sKZ">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="149"/>
