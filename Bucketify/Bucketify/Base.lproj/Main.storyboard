@@ -363,25 +363,6 @@ playlist by origin of Artist</string>
             </objects>
             <point key="canvasLocation" x="897" y="1685"/>
         </scene>
-        <!--View Controller - Year-->
-        <scene sceneID="Fo7-mg-qLC">
-            <objects>
-                <viewController id="ivY-kG-2Ec" sceneMemberID="viewController">
-                    <layoutGuides>
-                        <viewControllerLayoutGuide type="top" id="t7W-To-ROt"/>
-                        <viewControllerLayoutGuide type="bottom" id="R9B-sC-HDu"/>
-                    </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="nRa-Ml-GbA">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                    </view>
-                    <navigationItem key="navigationItem" title="Year" id="bOf-js-f87"/>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="EVO-tm-6je" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="897" y="963"/>
-        </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
