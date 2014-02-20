@@ -18,7 +18,7 @@
 
 @property (strong, nonatomic) EchoNestWollmilchsau *filterStarredItems;
 @property (weak, nonatomic) IBOutlet UILabel *statusLabel;
-@property (weak, nonatomic) IBOutlet UITextField *countryTextField;
+@property (weak, nonatomic) IBOutlet UITextField *textFieldCountry;
 
 @end
 
@@ -30,6 +30,8 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+    
+    self.textFieldCountry.delegate = self;
 }
 
 #pragma mark - Memory
@@ -40,6 +42,13 @@
     // Dispose of any resources that can be recreated.
     
     DLog(@"Info: didReceiveMemoryWarning");
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 
 #pragma mark - Actions
@@ -61,7 +70,7 @@
 //    [self.filterStarredItems filerStarredItemsByCountry:self.countryTextField.text];
 //    [self.filterStarredItems filerPlaylistName:@"Starred" byCountry:@"Sweden" toPlaylist:@"test555"];
 //    [self.filterStarredItems filterPlaylistName:@"test555" byCountry:@"Sweden" toPlaylist:@"test666"];
-    [self.filterStarredItems filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:@"Sweden" toPlaylist:[userDefaults stringForKey:kOutPlaylist]];
+    [self.filterStarredItems filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:self.textFieldCountry.text toPlaylist:[userDefaults stringForKey:kOutPlaylist]];
 }
 
 #pragma mark - KVO/KVC

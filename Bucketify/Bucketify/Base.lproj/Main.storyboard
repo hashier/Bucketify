@@ -327,8 +327,8 @@ playlist by origin of Artist</string>
                     </view>
                     <navigationItem key="navigationItem" title="Country" id="pmU-uC-lLN"/>
                     <connections>
-                        <outlet property="countryTextField" destination="99d-Vl-1ag" id="ryL-t7-eeV"/>
                         <outlet property="statusLabel" destination="reU-IW-5eb" id="Xba-BZ-rQw"/>
+                        <outlet property="textFieldCountry" destination="99d-Vl-1ag" id="Cdk-5I-Yeu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>

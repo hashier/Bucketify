@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface CountryVC : UIViewController
+@interface CountryVC : UIViewController <UITextFieldDelegate>
 
 @end

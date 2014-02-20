@@ -40,16 +40,16 @@
     self.textFieldOutPlaylist.delegate = self;
 }
 
-- (void)viewWillAppear:(BOOL)animated{
+- (void)viewWillAppear:(BOOL)animated {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
     [super viewDidAppear:animated];
 
+    // layout
     [userDefaults registerDefaults:@{kInPlaylist: @"Starred", kOutPlaylist: @"Starred_Filtered"}];
 
     self.textFieldInPlaylist.text = [userDefaults stringForKey:kInPlaylist];
     self.textFieldOutPlaylist.text = [userDefaults stringForKey:kOutPlaylist];
-
 }
 
 #pragma mark - Memory
