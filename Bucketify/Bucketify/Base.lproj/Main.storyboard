@@ -104,7 +104,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="149"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="LGJ-XI-KLW">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="LGJ-XI-KLW">
                                                     <rect key="frame" x="20" y="20" width="280" height="109"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <string key="text">Country
@@ -114,6 +114,12 @@ Filter your playlist by origin of the artist.</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="LGJ-XI-KLW" firstAttribute="top" secondItem="xfD-No-OqP" secondAttribute="top" constant="20" symbolic="YES" id="7ZN-ch-cg5"/>
+                                                <constraint firstItem="LGJ-XI-KLW" firstAttribute="leading" secondItem="xfD-No-OqP" secondAttribute="leading" constant="20" symbolic="YES" id="dMP-jD-Nu9"/>
+                                                <constraint firstAttribute="bottom" secondItem="LGJ-XI-KLW" secondAttribute="bottom" constant="20" symbolic="YES" id="feG-Sv-zwx"/>
+                                                <constraint firstAttribute="trailing" secondItem="LGJ-XI-KLW" secondAttribute="trailing" constant="20" symbolic="YES" id="plS-GT-k5n"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <segue destination="vXZ-lx-hvc" kind="push" id="JWY-at-uoY"/>
@@ -126,7 +132,7 @@ Filter your playlist by origin of the artist.</string>
                                             <rect key="frame" x="0.0" y="0.0" width="320" height="149"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="4Jv-jc-Iia">
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="4Jv-jc-Iia">
                                                     <rect key="frame" x="20" y="20" width="280" height="109"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <string key="text">Genre
@@ -136,6 +142,12 @@ Filter your playlist by genre.</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottom" secondItem="4Jv-jc-Iia" secondAttribute="bottom" constant="20" symbolic="YES" id="3zl-0v-1mu"/>
+                                                <constraint firstAttribute="trailing" secondItem="4Jv-jc-Iia" secondAttribute="trailing" constant="20" symbolic="YES" id="8dS-Wt-duy"/>
+                                                <constraint firstItem="4Jv-jc-Iia" firstAttribute="leading" secondItem="Tx7-vq-yqB" secondAttribute="leading" constant="20" symbolic="YES" id="Yg4-qF-egF"/>
+                                                <constraint firstItem="4Jv-jc-Iia" firstAttribute="top" secondItem="Tx7-vq-yqB" secondAttribute="top" constant="20" symbolic="YES" id="saB-JI-5x8"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <segue destination="gbd-Br-3y1" kind="push" id="kdo-fv-etB"/>
@@ -152,8 +164,8 @@ Filter your playlist by genre.</string>
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="149"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="VNj-r3-GcX">
-                                                    <rect key="frame" x="20" y="20" width="280" height="109"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="247" translatesAutoresizingMaskIntoConstraints="NO" id="VNj-r3-GcX">
+                                                    <rect key="frame" x="20" y="20" width="247" height="109"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <string key="text">Number of items
 
@@ -162,6 +174,12 @@ Spotify's client sometimes hides songs, here you can find out how many songs are
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="VNj-r3-GcX" secondAttribute="trailing" constant="20" symbolic="YES" id="F9W-Fb-BD1"/>
+                                                <constraint firstItem="VNj-r3-GcX" firstAttribute="top" secondItem="DNN-mx-BEb" secondAttribute="top" constant="20" symbolic="YES" id="dUb-0Q-y5R"/>
+                                                <constraint firstItem="VNj-r3-GcX" firstAttribute="leading" secondItem="DNN-mx-BEb" secondAttribute="leading" constant="20" symbolic="YES" id="e7D-ex-MKY"/>
+                                                <constraint firstAttribute="bottom" secondItem="VNj-r3-GcX" secondAttribute="bottom" constant="20" symbolic="YES" id="ySS-tw-uxs"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <segue destination="VMh-d1-a0v" kind="push" id="HZq-Sh-Bjw"/>
@@ -174,8 +192,8 @@ Spotify's client sometimes hides songs, here you can find out how many songs are
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="149"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="Q0o-qW-wp7">
-                                                    <rect key="frame" x="20" y="20" width="280" height="109"/>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="247" translatesAutoresizingMaskIntoConstraints="NO" id="Q0o-qW-wp7">
+                                                    <rect key="frame" x="20" y="20" width="247" height="109"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <string key="text">Randomize
 
@@ -184,6 +202,12 @@ Randomize a given playlistize</string>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Q0o-qW-wp7" firstAttribute="top" secondItem="v5b-tM-sKZ" secondAttribute="top" constant="20" symbolic="YES" id="9zC-do-ksD"/>
+                                                <constraint firstAttribute="bottom" secondItem="Q0o-qW-wp7" secondAttribute="bottom" constant="20" symbolic="YES" id="HAK-eh-PxQ"/>
+                                                <constraint firstAttribute="trailing" secondItem="Q0o-qW-wp7" secondAttribute="trailing" constant="20" symbolic="YES" id="Slg-Wx-x6R"/>
+                                                <constraint firstItem="Q0o-qW-wp7" firstAttribute="leading" secondItem="v5b-tM-sKZ" secondAttribute="leading" constant="20" symbolic="YES" id="e4a-MJ-qdY"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                         <connections>
                                             <segue destination="KkI-KC-qM6" kind="push" id="jtC-Sy-eFb"/>
