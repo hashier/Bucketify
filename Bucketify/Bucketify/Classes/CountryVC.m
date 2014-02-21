@@ -11,12 +11,12 @@
 
 #import "CountryVC.h"
 #import "common.h"
-#import "EchoNestWollmilchsau.h"
+#import "Bucketify.h"
 #import "config.h"
 
 @interface CountryVC ()
 
-@property (strong, nonatomic) EchoNestWollmilchsau *bucketify;
+@property (strong, nonatomic) Bucketify *bucketify;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 @property (weak, nonatomic) IBOutlet UITextField *textFieldCountry;
 
@@ -62,7 +62,7 @@
         [self.bucketify removeObserver:self forKeyPath:@"status"];
     }
     @catch (NSException * __unused exception) {}
-    self.bucketify = [[EchoNestWollmilchsau alloc] init];
+    self.bucketify = [[Bucketify alloc] init];
     [self.bucketify addObserver:self
                      forKeyPath:@"status"
                         options:0

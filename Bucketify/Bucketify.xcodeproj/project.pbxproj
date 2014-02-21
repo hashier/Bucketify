@@ -30,7 +30,7 @@
 		0068911018985FCC002C1915 /* NavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068910F18985FCC002C1915 /* NavigationViewController.m */; };
 		0068911218985FE3002C1915 /* CountryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068911118985FE3002C1915 /* CountryVC.m */; };
 		008096611894BB64000AC16A /* config.m in Sources */ = {isa = PBXBuildFile; fileRef = 008096601894BB64000AC16A /* config.m */; };
-		00E3B812184804FC009B351B /* EchoNestWollmilchsau.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B811184804FC009B351B /* EchoNestWollmilchsau.m */; };
+		00E3B812184804FC009B351B /* Bucketify.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B811184804FC009B351B /* Bucketify.m */; };
 		00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B8151848D58B009B351B /* EchoNestTicket.m */; };
 		5267851FA27C46D0AEB03841 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 743D12CB79C84A95BCA21E57 /* libPods.a */; };
 /* End PBXBuildFile section */
@@ -85,8 +85,8 @@
 		0068911118985FE3002C1915 /* CountryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CountryVC.m; path = Classes/CountryVC.m; sourceTree = "<group>"; };
 		0080965F1894BB64000AC16A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		008096601894BB64000AC16A /* config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = config.m; sourceTree = "<group>"; };
-		00E3B810184804FC009B351B /* EchoNestWollmilchsau.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EchoNestWollmilchsau.h; path = Classes/EchoNestWollmilchsau.h; sourceTree = "<group>"; };
-		00E3B811184804FC009B351B /* EchoNestWollmilchsau.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EchoNestWollmilchsau.m; path = Classes/EchoNestWollmilchsau.m; sourceTree = "<group>"; };
+		00E3B810184804FC009B351B /* Bucketify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bucketify.h; path = Classes/Bucketify.h; sourceTree = "<group>"; };
+		00E3B811184804FC009B351B /* Bucketify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bucketify.m; path = Classes/Bucketify.m; sourceTree = "<group>"; };
 		00E3B8141848D58B009B351B /* EchoNestTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EchoNestTicket.h; path = Classes/EchoNestTicket.h; sourceTree = "<group>"; };
 		00E3B8151848D58B009B351B /* EchoNestTicket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EchoNestTicket.m; path = Classes/EchoNestTicket.m; sourceTree = "<group>"; };
 		00ECAC29183C51E4006D311F /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = common.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -243,8 +243,8 @@
 		00E3B81318480536009B351B /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				00E3B810184804FC009B351B /* EchoNestWollmilchsau.h */,
-				00E3B811184804FC009B351B /* EchoNestWollmilchsau.m */,
+				00E3B810184804FC009B351B /* Bucketify.h */,
+				00E3B811184804FC009B351B /* Bucketify.m */,
 				00E3B8141848D58B009B351B /* EchoNestTicket.h */,
 				00E3B8151848D58B009B351B /* EchoNestTicket.m */,
 			);
@@ -404,7 +404,7 @@
 				00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */,
 				0068911018985FCC002C1915 /* NavigationViewController.m in Sources */,
 				004481D818257318007AD1F4 /* AppDelegate.m in Sources */,
-				00E3B812184804FC009B351B /* EchoNestWollmilchsau.m in Sources */,
+				00E3B812184804FC009B351B /* Bucketify.m in Sources */,
 				0061A15A18B6DB0F00D0F0A9 /* RandVC.m in Sources */,
 				004481D418257318007AD1F4 /* main.m in Sources */,
 				00503E7518439C4600890D64 /* ENAPIRequest.m in Sources */,

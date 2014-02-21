@@ -1,5 +1,5 @@
 //
-//  EchoNestWollmilchsau.h
+//  Bucketify.h
 //  Bucketify
 //
 //  Created by Christopher Loessl on 29/11/13.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "CocoaLibSpotify.h"
 
-@interface EchoNestWollmilchsau : NSObject
+@interface Bucketify : NSObject
 
 @property (strong, readonly, nonatomic) NSString *status;
 
