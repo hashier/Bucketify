@@ -7,12 +7,22 @@
 //
 
 #import "AppDelegate.h"
+#import "config.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+
+    if ( ! [userDefaults stringForKey:kInPlaylist]) {
+        [userDefaults setObject:@"Starred" forKey:kInPlaylist];
+    }
+    if ( ! [userDefaults stringForKey:kOutPlaylist]) {
+        [userDefaults setObject:@"Starred_Filtered" forKey:kOutPlaylist];
+    }
+    [userDefaults synchronize];
+
     return YES;
 }
 							

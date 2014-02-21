@@ -46,7 +46,7 @@
     [super viewDidAppear:animated];
 
     // layout
-    [userDefaults registerDefaults:@{kInPlaylist: @"Starred", kOutPlaylist: @"Starred_Filtered"}];
+//    [userDefaults registerDefaults:@{kInPlaylist: @"Starred", kOutPlaylist: @"Starred_Filtered"}];
 
     self.textFieldInPlaylist.text = [userDefaults stringForKey:kInPlaylist];
     self.textFieldOutPlaylist.text = [userDefaults stringForKey:kOutPlaylist];
@@ -78,8 +78,14 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 
     if (sender == self.textFieldInPlaylist) {
+        if ([sender.text isEqualToString:@""]) {
+            sender.text = @"Starred";
+        }
         [userDefaults setObject:self.textFieldInPlaylist.text forKey:kInPlaylist];
     } else if (sender == self.textFieldOutPlaylist) {
+        if ([sender.text isEqualToString:@""]) {
+            sender.text = @"Starred_Filtered";
+        }
         [userDefaults setObject:self.textFieldOutPlaylist.text forKey:kOutPlaylist];
     }
 
