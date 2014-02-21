@@ -14,5 +14,6 @@
 @property (strong, readonly, nonatomic) NSString *status;
 
 - (void)filterPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist;
+- (void)countSongsInPlaylist:(NSString *)playlistName;
 
 @end

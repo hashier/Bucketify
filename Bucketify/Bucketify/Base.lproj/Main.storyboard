@@ -239,10 +239,10 @@ Randomize a given playlistize</string>
             </objects>
             <point key="canvasLocation" x="56" y="586"/>
         </scene>
-        <!--View Controller - Randomize-->
+        <!--RandVC - Randomize-->
         <scene sceneID="PA9-hf-Hsv">
             <objects>
-                <viewController id="KkI-KC-qM6" sceneMemberID="viewController">
+                <viewController id="KkI-KC-qM6" customClass="RandVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="cSb-Gz-Gdj"/>
                         <viewControllerLayoutGuide type="bottom" id="MEF-KF-oCs"/>
@@ -250,13 +250,35 @@ Randomize a given playlistize</string>
                     <view key="view" contentMode="scaleToFill" id="GOs-EE-ZIS">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8KL-PT-FCr">
+                                <rect key="frame" x="137" y="269" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonGo:" destination="KkI-KC-qM6" eventType="touchUpInside" id="WTP-Zw-qZn"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Y6z-Cd-MjU">
+                                <rect key="frame" x="20" y="307" width="280" height="45"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Randomize" id="cjZ-AV-aGg"/>
+                    <connections>
+                        <outlet property="buttonGo" destination="8KL-PT-FCr" id="DFD-yZ-Uyj"/>
+                        <outlet property="labelStatus" destination="Y6z-Cd-MjU" id="ptd-F7-aTs"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7OL-mL-z4N" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="70" y="1301"/>
+            <point key="canvasLocation" x="897" y="1715"/>
         </scene>
         <!--Navigation View Controller-->
         <scene sceneID="bN1-Se-FWT">
@@ -296,7 +318,7 @@ Randomize a given playlistize</string>
                                 </connections>
                             </button>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Status" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="280" translatesAutoresizingMaskIntoConstraints="NO" id="reU-IW-5eb">
-                                <rect key="frame" x="20" y="307" width="280" height="41"/>
+                                <rect key="frame" x="20" y="307" width="280" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -327,7 +349,7 @@ playlist by origin of Artist</string>
                     </view>
                     <navigationItem key="navigationItem" title="Country" id="pmU-uC-lLN"/>
                     <connections>
-                        <outlet property="statusLabel" destination="reU-IW-5eb" id="Xba-BZ-rQw"/>
+                        <outlet property="labelStatus" destination="reU-IW-5eb" id="RWf-Md-7nH"/>
                         <outlet property="textFieldCountry" destination="99d-Vl-1ag" id="Cdk-5I-Yeu"/>
                     </connections>
                 </viewController>
@@ -354,10 +376,10 @@ playlist by origin of Artist</string>
             </objects>
             <point key="canvasLocation" x="897" y="240"/>
         </scene>
-        <!--View Controller - Number of items-->
+        <!--CountVC - Number of items-->
         <scene sceneID="7mO-7j-EMT">
             <objects>
-                <viewController id="VMh-d1-a0v" sceneMemberID="viewController">
+                <viewController id="VMh-d1-a0v" customClass="CountVC" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="eTF-tE-bdf"/>
                         <viewControllerLayoutGuide type="bottom" id="E62-C1-AqZ"/>
@@ -365,13 +387,35 @@ playlist by origin of Artist</string>
                     <view key="view" contentMode="scaleToFill" id="Qwr-eI-llP">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="K7p-bn-3U7">
+                                <rect key="frame" x="137" y="269" width="46" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="buttonGo:" destination="VMh-d1-a0v" eventType="touchUpInside" id="g9K-xT-v8m"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jsc-L3-DzH">
+                                <rect key="frame" x="20" y="307" width="280" height="45"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Number of items" id="Sut-TH-gur"/>
+                    <connections>
+                        <outlet property="buttonGo" destination="K7p-bn-3U7" id="qWs-EK-M2x"/>
+                        <outlet property="labelStatus" destination="Jsc-L3-DzH" id="9EQ-ob-PGz"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8tr-1D-yWR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="897" y="1685"/>
+            <point key="canvasLocation" x="897" y="1041"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

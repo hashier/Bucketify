@@ -31,7 +31,7 @@
 #define SYSTEM_VERSION_LESS_THAN(v)                 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] == NSOrderedAscending)
 #define SYSTEM_VERSION_LESS_THAN_OR_EQUAL_TO(v)     ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedDescending)
 
-static inline long NSIntToLong(NSInteger i) {return (long)i;}
-static inline long NSUIntToLong(NSUInteger i) {return (unsigned long)i;}
+static inline long NSIntToLong(NSInteger i) {return (long)i;}                       // %ld
+static inline unsigned long NSUIntToLong(NSUInteger i) {return (unsigned long)i;}   // %lu
 
 #endif

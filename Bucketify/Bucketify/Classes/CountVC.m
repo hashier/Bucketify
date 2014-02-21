@@ -1,60 +1,50 @@
 //
-//  ViewController.m
+//  CountVC.m
 //  Bucketify
 //
-//  Created by Christopher Loessl on 02/11/13.
-//  Copyright (c) 2013 Christopher Loessl. All rights reserved.
+//  Created by Christopher Loessl on 21/02/14.
+//  Copyright (c) 2014 Christopher Loessl. All rights reserved.
 //
 
-// song -> NSString that is a spotify:track:...
-// track -> SPTrack
-
-#import "CountryVC.h"
+#import "CountVC.h"
 #import "common.h"
 #import "EchoNestWollmilchsau.h"
 #import "config.h"
 
-@interface CountryVC ()
+@interface CountVC ()
 
 @property (strong, nonatomic) EchoNestWollmilchsau *bucketify;
+@property (weak, nonatomic) IBOutlet UIButton *buttonGo;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
-@property (weak, nonatomic) IBOutlet UITextField *textFieldCountry;
 
 @end
 
-@implementation CountryVC
+@implementation CountVC
 
-#pragma mark - View
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    
-    self.textFieldCountry.delegate = self;
+	// Do any additional setup after loading the view.
 }
-
-#pragma mark - Memory
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-    
-    DLog(@"Info: didReceiveMemoryWarning");
 }
 
-#pragma mark - UITextFieldDelegate
+#pragma mark - Action
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
-    [textField resignFirstResponder];
-    return YES;
-}
-
-#pragma mark - Actions
-
-- (IBAction)doItButton:(id)sender
-{
+- (IBAction)buttonGo:(UIButton *)sender {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     DLog(@"Button pressed (:");
 
@@ -67,7 +57,7 @@
                      forKeyPath:@"status"
                         options:0
                         context:nil];
-    [self.bucketify filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:self.textFieldCountry.text toPlaylist:[userDefaults stringForKey:kOutPlaylist]];
+    [self.bucketify countSongsInPlaylist:[userDefaults stringForKey:kInPlaylist]];
 }
 
 #pragma mark - KVO/KVC

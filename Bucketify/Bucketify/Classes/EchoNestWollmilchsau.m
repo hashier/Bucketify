@@ -44,13 +44,14 @@
 #pragma mark - Public
 
 - (void)filterPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist {
-    [self echoNestUseNewUserTasteProfileWithCompletionBlock:^(NSString *userTasteProfileID) {
+    [self echoNestUseNewUserArtistTasteProfileWithCompletionBlock:^(NSString *userTasteProfileID) {
         [self spotifyGetTracksFromPlaylistName:playlistName then:^(NSArray *tracks) {
             [self echoNestUpdateArtistUserTasteProfileID:userTasteProfileID withTracks:tracks then:^{
                 [self echoNestReadUserTasteProfileID:userTasteProfileID andFilterTracks:tracks byCountry:country then:^(NSArray *filtered) {
                     [self spotifyAddSongURLs:filtered toPlaylistName:toPlaylist then:^{
-                        [self echoNestDeleteUserTasteProfileID:userTasteProfileID then:nil];
-                        self.status = @"All done, check your filtered playlist in Spotify";
+                        [self echoNestDeleteUserTasteProfileID:userTasteProfileID then:^{
+                            self.status = @"All done, check your filtered playlist in Spotify";
+                        }];
                     }];
                 }];
             }];
@@ -58,9 +59,15 @@
     }];
 }
 
+- (void)countSongsInPlaylist:(NSString *)playlistName {
+    [self spotifyGetTracksFromPlaylistName:playlistName then:^(NSArray *tracks) {
+        self.status = [NSString stringWithFormat:@"All done, found %lu songs", NSUIntToLong([tracks count])];
+    }];
+}
+
 #pragma mark - EchoNest
 
-- (void)echoNestUseNewUserTasteProfileWithCompletionBlock:(void (^)(NSString *filtered))completionBlock {
+- (void)echoNestUseNewUserArtistTasteProfileWithCompletionBlock:(void (^)(NSString *filtered))completionBlock {
     if (self.userTasteProfileID) {
         DLog(@"UserTasteProfileID is: %@, going to delete it", self.userTasteProfileID);
         [self echoNestDeleteUserTasteProfileID:self.userTasteProfileID then:^{
@@ -80,8 +87,6 @@
                                return;
                            }
                        }
-                       DLog(@"Warning: This should never happen, it's okay, but not good");
-                       DLog(@"User TasteProfile not found, don't have to delete it");
                        self.userTasteProfileID = nil;
                        [self echoNestUseArtistUserTasteProfileWithCompletionBlock:completionBlock];
                    }];
@@ -127,6 +132,8 @@
 - (void)echoNestDeleteUserTasteProfileID:(NSString *)userTasteProfileID then:(void (^)())completionBlock
 {
     DLog(@"Deleting TasteProfileID: %@", userTasteProfileID);
+
+    self.status = @"Cleaning up";
     
     if (!userTasteProfileID) {
         DLog(@"Error: TasteProfile is empty");
@@ -270,6 +277,7 @@
 
             [SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
 
+                DLog(@"Playlist(s) loaded    : %@", loadedPlaylists);
                 DLog(@"Playlist(s) not loaded: %@", notLoadedPlaylists);
 
                 NSArray *tracks;
@@ -292,7 +300,7 @@
                 }
 
                 if ([tracks count] == 0) {
-                    DLog(@"Warning: Didn't find the given playlist's name or no songs in it");
+                    DLog(@"Warning: Didn't find the given playlist's name (%@) or no songs in it", name);
                     self.status = @"Didn't find the given playlist or no songs in it";
                     return;
                 }
