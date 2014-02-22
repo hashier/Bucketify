@@ -67,7 +67,7 @@
                      forKeyPath:@"status"
                         options:0
                         context:nil];
-    [self.bucketify filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:self.textFieldCountry.text toPlaylist:[userDefaults stringForKey:kOutPlaylist]];
+    [self.bucketify filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:self.textFieldCountry.text toPlaylistName:[userDefaults stringForKey:kOutPlaylist]];
 }
 
 #pragma mark - KVO/KVC

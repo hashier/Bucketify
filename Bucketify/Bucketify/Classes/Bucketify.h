@@ -13,7 +13,8 @@
 
 @property (strong, readonly, nonatomic) NSString *status;
 
-- (void)filterPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylist:(NSString *)toPlaylist;
+- (void)filterPlaylistName:(NSString *)playlistName byCountry:(NSString *)country toPlaylistName:(NSString *)toPlaylistName;
 - (void)countSongsInPlaylist:(NSString *)playlistName;
+- (void)randomiseInPlaylist:(NSString *)playlistName toPlaylistName:(NSString *)toPlaylistName;
 
 @end
