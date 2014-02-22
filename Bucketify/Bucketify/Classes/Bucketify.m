@@ -93,77 +93,6 @@
     }];
 }
 
-- (void)spotifyGetTracksFromPlaylist:(SPPlaylist *)playlist then:(void (^)(NSArray *tracks))completionBlock {
-    NSArray *tracks = [self tracksFromPlaylistItems:playlist.items];
-    [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
-        DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
-        if (completionBlock) completionBlock(loadedTracks);
-    }];
-}
-
-- (void)spotifyPlaylistName:(NSString *)playlistName toSPPlaylist:(void (^)(SPPlaylist *toPlaylist))completionBlock {
-    DLog(@"PlaylistName (%@) -> SPPlaylist", playlistName);
-    self.status = @"Waiting for Spotify information";
-
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedSession, NSArray *notLoadedSession) {
-            DLog(@"Session loaded");
-
-        SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
-        [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
-            DLog(@"Container loaded");
-
-            NSMutableArray *playlists = [NSMutableArray array];
-            if ([playlistName isEqualToString:@"Starred"]) {
-                DLog(@"Adding Starred playlist");
-                [playlists addObject:[SPSession sharedSession].starredPlaylist];
-            } else {
-                DLog(@"Adding all user playlists");
-                [playlists addObjectsFromArray:[SPSession sharedSession].userPlaylists.flattenedPlaylists];
-            }
-
-            [SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
-
-                DLog(@"Playlist(s) loaded    : %@", loadedPlaylists);
-                DLog(@"Playlist(s) not loaded: %@", notLoadedPlaylists);
-                
-                SPPlaylist *returnPlaylist;
-
-                // if only one playlist loaded, check if it's the starred one
-                // starred one does _not_ have a name, therefore check url
-                if ([loadedPlaylists count] == 1) {
-                    SPPlaylist *aPlaylist = [loadedPlaylists firstObject];
-                    DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
-                    if ([[aPlaylist.spotifyURL absoluteString] rangeOfString:@"starred" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                        returnPlaylist = aPlaylist;
-                    }
-                }
-                // iterate through all loaded playlists and check the name
-                for (SPPlaylist *aPlaylist in loadedPlaylists) {
-                    DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
-                    if ([aPlaylist.name isEqualToString:playlistName]) {
-                    DLog(@"Match found: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
-                        returnPlaylist = aPlaylist;
-                        break;
-                    }
-                }
-
-                if (! returnPlaylist) {
-                    DLog(@"Warning: Didn't find the given playlist's name (%@)", playlistName);
-                    self.status = [NSString stringWithFormat:@"Didn't find the given playlist %@", playlistName];
-                    [container createPlaylistWithName:playlistName callback:^(SPPlaylist *createdPlaylist) {
-                        DLog(@"Playlist %@ created (%@)", playlistName, createdPlaylist.name);
-                        [SPAsyncLoading waitUntilLoaded:createdPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
-                            DLog(@"Playlist %@ created (%@) and loaded", playlistName, createdPlaylist.name);
-                            if (completionBlock) completionBlock(returnPlaylist);
-                        }];
-                    }];
-                }
-                if (completionBlock) completionBlock(returnPlaylist);
-            }];
-        }];
-    }];
-}
-
 #pragma mark - EchoNest
 
 - (void)echoNestUseNewUserArtistTasteProfileWithCompletionBlock:(void (^)(NSString *filtered))completionBlock {
@@ -358,17 +287,27 @@
 
 #pragma mark - Spotify
 
-- (void)___spotifyGetTracksFromPlaylistName:(NSString *)playlistName then:(void (^)(NSArray *items))completionBlock {
+- (void)spotifyGetTracksFromPlaylist:(SPPlaylist *)playlist then:(void (^)(NSArray *tracks))completionBlock {
+    NSArray *tracks = [self tracksFromPlaylistItems:playlist.items];
+    [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
+        DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
+        if (completionBlock) completionBlock(loadedTracks);
+    }];
+}
+
+- (void)spotifyPlaylistName:(NSString *)playlistName toSPPlaylist:(void (^)(SPPlaylist *toPlaylist))completionBlock {
+    DLog(@"PlaylistName (%@) -> SPPlaylist", playlistName);
     self.status = @"Waiting for Spotify information";
 
     [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedSession, NSArray *notLoadedSession) {
-            DLog(@"Session loaded");
+        DLog(@"Session loaded");
 
-        [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession].userPlaylists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
+        SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
+        [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
             DLog(@"Container loaded");
 
             NSMutableArray *playlists = [NSMutableArray array];
-            if ([playlistName caseInsensitiveCompare:@"@Starred"]) {
+            if ([playlistName isEqualToString:@"Starred"]) {
                 DLog(@"Adding Starred playlist");
                 [playlists addObject:[SPSession sharedSession].starredPlaylist];
             } else {
@@ -381,100 +320,39 @@
                 DLog(@"Playlist(s) loaded    : %@", loadedPlaylists);
                 DLog(@"Playlist(s) not loaded: %@", notLoadedPlaylists);
 
-                NSArray *tracks;
+                SPPlaylist *returnPlaylist;
 
                 // if only one playlist loaded, check if it's the starred one
                 // starred one does _not_ have a name, therefore check url
                 if ([loadedPlaylists count] == 1) {
                     SPPlaylist *aPlaylist = [loadedPlaylists firstObject];
+                    DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
                     if ([[aPlaylist.spotifyURL absoluteString] rangeOfString:@"starred" options:NSCaseInsensitiveSearch].location != NSNotFound) {
-                        tracks = [self tracksFromPlaylistItems:aPlaylist.items];
+                        returnPlaylist = aPlaylist;
                     }
                 }
                 // iterate through all loaded playlists and check the name
                 for (SPPlaylist *aPlaylist in loadedPlaylists) {
                     DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
                     if ([aPlaylist.name isEqualToString:playlistName]) {
-                        tracks = [self tracksFromPlaylistItems:aPlaylist.items];
+                        DLog(@"Match found: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
+                        returnPlaylist = aPlaylist;
                         break;
                     }
                 }
 
-                if ([tracks count] == 0) {
-                    DLog(@"Warning: Didn't find the given playlist's name (%@) or no songs in it", playlistName);
-                    self.status = @"Didn't find the given playlist or no songs in it";
-                    return;
-                }
-
-                [SPAsyncLoading waitUntilLoaded:tracks timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedTracks, NSArray *notLoadedTracks) {
-
-                    DLog(@"%@ of %@ tracks loaded.", [NSNumber numberWithInteger:loadedTracks.count], [NSNumber numberWithInteger:loadedTracks.count + notLoadedTracks.count]);
-
-                    if (completionBlock) completionBlock(loadedTracks);
-                }];
-            }];
-        }];
-    }];
-}
-
-- (void)___spotifyAddSongURLs:(NSArray *)songs toPlaylistName:(NSString *)playlistName then:(void (^)())completionBlock
-{
-    // Why is this in a block and not in a function/method?
-    // If this was a function I should make sure (again) that everything is loaded just to be sure no one
-    // else calls this function and hasn't waited until meta data is loaded
-    //
-    // so that this can not happen -> this is not a function but a block
-    //
-    // The alternative would by handing over a (loaded) SPPlaylist instead of a Playlist name.
-
-    self.status = @"Adding songs to Spotify";
-
-    void (^addSongsToPlaylist)(SPPlaylist *, NSArray *) = ^(SPPlaylist *thePlaylist, NSArray *songToAdd) {
-        DLog(@"Start to add %lu songToAdd", NSUIntToLong([songToAdd count]));
-        for (NSString *aSong in songToAdd) {
-            DLog(@"Try to add song: %@ to %@", aSong, thePlaylist.name);
-            [SPTrack trackForTrackURL:[NSURL URLWithString:aSong] inSession:[SPSession sharedSession] callback:^(SPTrack *aTrack) {
-                [thePlaylist addItem:aTrack atIndex:0 callback:^(NSError *error) {
-                    if (error) {
-                        DLog(@"Error: Couln't add track %@", aTrack.name);
-                        DLog(@"%@", error);
-                    } else {
-                        DLog(@"Track %@ successfully added", aTrack.name);
-                    }
-                }];
-            }];
-        }
-        if (completionBlock) completionBlock();
-    };
-
-    [SPAsyncLoading waitUntilLoaded:[SPSession sharedSession] timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedession, NSArray *notLoadedSession) {
-        SPPlaylistContainer *container = [SPSession sharedSession].userPlaylists;
-        [SPAsyncLoading waitUntilLoaded:container timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedContainers, NSArray *notLoadedContainers) {
-
-            NSMutableArray *playlists = [NSMutableArray array];
-			[playlists addObject:[SPSession sharedSession].starredPlaylist];
-			[playlists addObject:[SPSession sharedSession].inboxPlaylist];
-			[playlists addObjectsFromArray:[SPSession sharedSession].userPlaylists.flattenedPlaylists];
-
-			[SPAsyncLoading waitUntilLoaded:playlists timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylists, NSArray *notLoadedPlaylists) {
-                SPPlaylist *addItemsToThisPlaylist;
-                for (SPPlaylist *aPlaylist in loadedPlaylists) {
-                    if ([aPlaylist.name isEqualToString:playlistName]) {
-                        DLog(@"Found playlist with name %@", playlistName);
-                        addItemsToThisPlaylist = aPlaylist;
-                        addSongsToPlaylist(addItemsToThisPlaylist, songs);
-                        break;
-                    }
-                }
-                // no playlist found so we create a new one and add songs to it
-                if (!addItemsToThisPlaylist) {
+                if (! returnPlaylist) {
+                    DLog(@"Warning: Didn't find the given playlist's name (%@)", playlistName);
+                    self.status = [NSString stringWithFormat:@"Didn't find the given playlist %@", playlistName];
                     [container createPlaylistWithName:playlistName callback:^(SPPlaylist *createdPlaylist) {
+                        DLog(@"Playlist %@ created (%@)", playlistName, createdPlaylist.name);
                         [SPAsyncLoading waitUntilLoaded:createdPlaylist timeout:kSPAsyncLoadingDefaultTimeout then:^(NSArray *loadedPlaylist, NSArray *notLoadedPlaylist) {
-                            DLog(@"Playlist %@ created (%@)", playlistName, createdPlaylist.name);
-                            addSongsToPlaylist(createdPlaylist, songs);
+                            DLog(@"Playlist %@ created (%@) and loaded", playlistName, createdPlaylist.name);
+                            if (completionBlock) completionBlock(returnPlaylist);
                         }];
                     }];
                 }
+                if (completionBlock) completionBlock(returnPlaylist);
             }];
         }];
     }];
