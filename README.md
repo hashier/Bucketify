@@ -9,7 +9,7 @@ Only available for iOS 7.
 
 * Filter "Starred" playlist by country of artist
 * Count items in playlist
-* Randomise a playlist
+* Randomise playlist (Spotifys random seems sometimes not random enough to me)
 
 
 ## Planned features
@@ -20,7 +20,8 @@ Only available for iOS 7.
 * Filter playlist by BMP (beats per minute)
 * Backup playlist
 * Restore playlist
-* Randomise playlist (Spotifys random seems sometimes not random enough to me)
+* Backup all playlists
+* Restore all playlists
 * Generate playlist with all songs from all playlists
 
 Just let me know if you have any requests or ideas.

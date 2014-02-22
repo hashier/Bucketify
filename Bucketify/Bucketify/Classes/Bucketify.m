@@ -307,6 +307,7 @@
             DLog(@"Container loaded");
 
             NSMutableArray *playlists = [NSMutableArray array];
+//            if ([playlistName caseInsensitiveCompare:@"Starred"] == NSOrderedSame) {
             if ([playlistName isEqualToString:@"Starred"]) {
                 DLog(@"Adding Starred playlist");
                 [playlists addObject:[SPSession sharedSession].starredPlaylist];
@@ -328,6 +329,7 @@
                     SPPlaylist *aPlaylist = [loadedPlaylists firstObject];
                     DLog(@"Looking at name: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
                     if ([[aPlaylist.spotifyURL absoluteString] rangeOfString:@"starred" options:NSCaseInsensitiveSearch].location != NSNotFound) {
+                        DLog(@"Match found: %@ url: %@", aPlaylist.name, aPlaylist.spotifyURL);
                         returnPlaylist = aPlaylist;
                     }
                 }
