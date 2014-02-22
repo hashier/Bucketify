@@ -1,4 +1,19 @@
-# Filter
+# Implemented
+
+## Filter
+
+* Filter playlist by country
+
+
+## Utilities
+
+* Count (how many songs are there in the playlist?)
+* Randomise playlist (Spotifys random seems sometimes not random enough to me)
+
+
+# Ideas
+
+## Filter
 
 * Filter playlist by genre
 * Filter playlist by year
@@ -6,13 +21,12 @@
 * Filter playlist by BMP (beats per minute)
 
 
-# Utilities
+## Utilities
 
-* Count (how many songs are there in the playlist?)
 * Backup playlist
 * Restore playlist
-* Randomise playlist (Spotifys random seems sometimes not random enough to me)
 * Generate playlist with all songs from all playlists
+* Remove duplicates
 
 
 # Random

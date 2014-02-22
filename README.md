@@ -8,11 +8,13 @@ Only available for iOS 7.
 # Features
 
 * Filter "Starred" playlist by country of artist
+* Count items in playlist
+* Randomise a playlist
 
 
 ## Planned features
 
-* Filter playlist by genre (50% done)
+* Filter playlist by genre
 * Filter playlist by year
 * Filter playlist by mood
 * Filter playlist by BMP (beats per minute)
