@@ -75,17 +75,8 @@
     [self spotifyPlaylistName:playlistName toSPPlaylist:^(SPPlaylist *playlist) {
         [self spotifyPlaylistName:toPlaylistName toSPPlaylist:^(SPPlaylist *toPlaylist) {
             [self spotifyGetTracksFromPlaylist:playlist then:^(NSArray *tracks) {
-                // http://nshipster.com/random/
-                NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:tracks];
-                NSUInteger count = [mutableArray count];
-                // See http://en.wikipedia.org/wiki/Fisher–Yates_shuffle
-                if (count > 1) {
-                    for (NSUInteger i = count - 1; i > 0; --i) {
-                        [mutableArray exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform((int32_t)(i + 1))];
-                    }
-                }
-                NSArray *randomArray = [NSArray arrayWithArray:mutableArray];
-                [self spotifyAddTracks:randomArray toPlaylist:toPlaylist then:^{
+                NSArray *randomTracks = [self randomiseArray:tracks];
+                [self spotifyAddTracks:randomTracks toPlaylist:toPlaylist then:^{
                     self.status = @"All done, check your playlist in Spotify";
                 }];
             }];
@@ -433,6 +424,21 @@
     }
     
     return [NSArray arrayWithArray:tracks];
+}
+
+- (NSArray *)randomiseArray:(NSArray *)tracks {
+    // http://nshipster.com/random/
+    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:tracks];
+    NSUInteger count = [mutableArray count];
+
+    // See http://en.wikipedia.org/wiki/Fisher–Yates_shuffle
+    if (count > 1) {
+        for (NSUInteger i = count - 1; i > 0; --i) {
+            [mutableArray exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform((u_int32_t)(i + 1))];
+        }
+    }
+
+    return [mutableArray copy];
 }
 
 @end
