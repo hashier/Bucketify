@@ -49,10 +49,13 @@
             [self spotifyPlaylistName:toPlaylistName toSPPlaylist:^(SPPlaylist *toPlaylist) {
                 [self spotifyGetTracksFromPlaylist:playlist then:^(NSArray *tracks) {
                     [self echoNestUpdateArtistUserTasteProfileID:userTasteProfileID withTracks:tracks then:^{
-                        [self echoNestReadUserTasteProfileID:userTasteProfileID andFilterTracks:tracks byCountry:country then:^(NSArray *filtered) {
-                            [self spotifyAddSongURLs:filtered toPlaylist:toPlaylist then:^{
-                                [self echoNestDeleteUserTasteProfileID:userTasteProfileID then:^{
-                                    self.status = @"All done, check your filtered playlist in Spotify";
+                        NSDictionary *parameters = @{@"id": userTasteProfileID, @"bucket": @"artist_location", @"results": @"1000"};
+                        [self echoNestReadUserTasteProfileWithParameters:parameters then:^(NSDictionary *tasteProfileInformation) {
+                            [self echoNestFilterTracks:tracks byCountry:country withTasteProfileInformation:tasteProfileInformation then:^(NSArray *filtered) {
+                                [self spotifyAddSongURLs:filtered toPlaylist:toPlaylist then:^{
+                                    [self echoNestDeleteUserTasteProfileID:userTasteProfileID then:^{
+                                        self.status = @"All done, check your filtered playlist in Spotify";
+                                    }];
                                 }];
                             }];
                         }];
@@ -164,7 +167,7 @@
     [ENAPIRequest POSTWithEndpoint:@"catalog/delete"
                      andParameters:parameters
                 andCompletionBlock:^(ENAPIRequest *request) {
-                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\nWhole request: %@",
+                    DLog(@"%@", [NSString stringWithFormat:@"Catalog Delete Request\nhttp status code: %ld\nechonest status code: %ld\nechonest status message: %@\nerror message: %@\nid: %@\nrequest.response: %@",
                                  NSIntToLong(request.httpResponseCode),
                                  NSIntToLong(request.echonestStatusCode),
                                  request.echonestStatusMessage,
@@ -232,48 +235,82 @@
                 }];
 }
 
-- (void)echoNestReadUserTasteProfileID:(NSString *)id andFilterTracks:(NSArray *)tracks byCountry:(NSString *)country then:(void (^)(NSArray *filtered))completionBlock {
+
+- (void)echoNestReadUserTasteProfileWithParameters:(NSDictionary *)parameters then:(void (^)(NSDictionary *tasteProfileInformation))completionBlock {
     // TODO: Only the first 1000 results are considered
     // results parameter can max be 1000
     // if more than 1000 -> new requests and start at 1000
 
     self.status = @"Getting information back from Echonest";
 
-    NSDictionary *parameters = @{@"id": id, @"bucket": @"artist_location", @"results": @"1000"};
-
     [ENAPIRequest GETWithEndpoint:@"catalog/read"
                     andParameters:parameters
-               andCompletionBlock:^(ENAPIRequest *request) {
-                   NSMutableSet *aSet = [[NSMutableSet alloc] init];
-                   for (NSDictionary *aDict in [request.response valueForKeyPath:@"response.catalog.items"]) {
-                       if ([aDict[@"artist_location"] isKindOfClass:[NSDictionary class]]) {
-                           DLog(@"Current artists informations: %@", aDict);
-                           if ([[aDict valueForKeyPath:@"artist_location.country"] isKindOfClass:[NSString class]]) {
-                               if ([[aDict valueForKeyPath:@"artist_location.country"] isEqualToString:country]) {
-                                   DLog(@"Adding artist %@ to set", aDict[@"artist_name"]);
-                                   [aSet addObject:[aDict valueForKeyPath:@"request.artist_id"]];
-                               } else {
-                                   DLog(@"Skipping artist %@", aDict[@"artist_name"]);
-                               }
-                           }
-                       }
-                   }
+               andCompletionBlock:^(ENAPIRequest *request){
+//                   DLog(@"EchoNest Response: %@", request.response);
+                   // Something like:
+                   // if (request.response[response.catalog.total > 1000) {
+                   //     recursive call with parameters start:1000
+                   // } else {
+                   //     call completion block
 
-                   self.status = @"Matching informations";
-
-                   NSMutableArray *tracksToAddToSpotify = [[NSMutableArray alloc] init];
-                   DLog(@"Tracks to check: %lu", NSUIntToLong([tracks count]));
-                   for (SPTrack *aTrack in tracks) {
-                       for (SPArtist *anArtist in aTrack.artists) {
-                           if ([aSet containsObject:[self spotifyString:[anArtist.spotifyURL absoluteString]]]) {
-                               [tracksToAddToSpotify addObject:[aTrack.spotifyURL absoluteString]];
-                               break;
-                           }
-                       }
-                   }
-                   DLog(@"We found %lu tracks after filtering, now add them.", NSUIntToLong([tracksToAddToSpotify count]));
-                   if (completionBlock) completionBlock(tracksToAddToSpotify);
+                   if (completionBlock) completionBlock(request.response);
                }];
+
+    // request.response looks like this: (empty artist list!)
+
+    /*
+    response =     {
+        catalog =         {
+            id = CANMCES144667FF8DE;
+            items =             (
+            );
+            name = hasspot;
+            start = 0;
+            total = 0;
+            type = artist;
+        };
+        status =         {
+            code = 0;
+            message = Success;
+            version = "4.2";
+        };
+    };
+     */
+}
+
+- (void)echoNestFilterTracks:(NSArray *)tracks byCountry:(NSString *)country withTasteProfileInformation:(NSDictionary *)tasteProfileInformation then:(void (^)(NSArray *filtered))completionBlock {
+    NSMutableSet *aSet = [[NSMutableSet alloc] init];
+
+    self.status = @"Building up filter";
+
+    for (NSDictionary *aDict in [tasteProfileInformation valueForKeyPath:@"response.catalog.items"]) {
+        if ([aDict[@"artist_location"] isKindOfClass:[NSDictionary class]]) {
+            DLog(@"Current artists informations: %@", aDict);
+            if ([[aDict valueForKeyPath:@"artist_location.country"] isKindOfClass:[NSString class]]) {
+                if ([[aDict valueForKeyPath:@"artist_location.country"] isEqualToString:country]) {
+                    DLog(@"Adding artist %@ to set", aDict[@"artist_name"]);
+                    [aSet addObject:[aDict valueForKeyPath:@"request.artist_id"]];
+                } else {
+                    DLog(@"Skipping artist %@", aDict[@"artist_name"]);
+                }
+            }
+        }
+    }
+
+    self.status = @"Matching informations";
+
+    NSMutableArray *tracksToAddToSpotify = [[NSMutableArray alloc] init];
+    DLog(@"Tracks to check: %lu", NSUIntToLong([tracks count]));
+    for (SPTrack *aTrack in tracks) {
+        for (SPArtist *anArtist in aTrack.artists) {
+            if ([aSet containsObject:[self spotifyString:[anArtist.spotifyURL absoluteString]]]) {
+                [tracksToAddToSpotify addObject:[aTrack.spotifyURL absoluteString]];
+                break;
+            }
+        }
+    }
+    DLog(@"We found %lu tracks after filtering, now add them.", NSUIntToLong([tracksToAddToSpotify count]));
+    if (completionBlock) completionBlock(tracksToAddToSpotify);
 }
 
 #pragma mark - Spotify
