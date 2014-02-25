@@ -127,7 +127,7 @@
                             NSString *aString = request.echonestStatusMessage;
                             [aString enumerateSubstringsInRange:NSMakeRange(0, [aString length])
                                                         options:NSStringEnumerationByWords | NSStringEnumerationReverse
-                                                     usingBlock:^(NSString *substring, NSRange subrange, NSRange enclosingRange, BOOL *stop) {
+                                                     usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
                                                          lastWord = substring;
                                                          *stop = YES;
                                                      }];
@@ -229,7 +229,6 @@
                     }];
                 }];
 }
-
 
 - (void)echoNestReadUserTasteProfileWithParameters:(NSDictionary *)parameters then:(void (^)(NSDictionary *tasteProfileInformation))completionBlock {
     // TODO: Only the first 1000 results are considered
