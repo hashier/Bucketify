@@ -28,12 +28,7 @@
     self = [super init];
     if (self) {
         if ([kEchoNestAPIKey isEqualToString:@""]) {
-            UIAlertView *alert =[[UIAlertView alloc ] initWithTitle:@"Key missing"
-                                                            message:@"Echonest Key missing; No EchoNest functionality"
-                                                           delegate:self
-                                                  cancelButtonTitle:@"Ok"
-                                                  otherButtonTitles:nil];
-            [alert show];
+            [self showAlertTitle:@"EchoNest APIKey missing" message:@"No EchoNest functionality"];
         } else {
             [ENAPIRequest setApiKey:kEchoNestAPIKey];
         }
@@ -240,6 +235,14 @@
     // TODO: Only the first 1000 results are considered
     // results parameter can max be 1000
     // if more than 1000 -> new requests and start at 1000
+    
+    if (![parameters objectForKey:@"id"]) {
+        DLog(@"Missing id field in parameter");
+
+        [self showAlertTitle:@"EchoNest ProfileID missing" message:@"Error: EchoNest ProfileID is not set in parameters"];
+        
+        return;
+    }
 
     self.status = @"Getting information back from Echonest";
 
@@ -257,7 +260,6 @@
                }];
 
     // request.response looks like this: (empty artist list!)
-
     /*
     response =     {
         catalog =         {
@@ -476,6 +478,16 @@
     }
 
     return [mutableArray copy];
+}
+
+- (void)showAlertTitle:(NSString *)title message:(NSString *)message {
+
+    UIAlertView *alert = [[UIAlertView alloc ] initWithTitle:title
+                                                     message:message
+                                                    delegate:self
+                                           cancelButtonTitle:@"Ok"
+                                           otherButtonTitles:nil];
+    [alert show];
 }
 
 @end
