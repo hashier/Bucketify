@@ -30,6 +30,7 @@
 		0068911018985FCC002C1915 /* NavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068910F18985FCC002C1915 /* NavigationViewController.m */; };
 		0068911218985FE3002C1915 /* CountryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068911118985FE3002C1915 /* CountryVC.m */; };
 		008096611894BB64000AC16A /* config.m in Sources */ = {isa = PBXBuildFile; fileRef = 008096601894BB64000AC16A /* config.m */; };
+		00B398A818BF6B7E00B6A225 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 00B398A718BF6B7E00B6A225 /* DefaultPreferences.plist */; };
 		00E3B812184804FC009B351B /* Bucketify.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B811184804FC009B351B /* Bucketify.m */; };
 		00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B8151848D58B009B351B /* EchoNestTicket.m */; };
 		5267851FA27C46D0AEB03841 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 743D12CB79C84A95BCA21E57 /* libPods.a */; };
@@ -85,6 +86,7 @@
 		0068911118985FE3002C1915 /* CountryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CountryVC.m; path = Classes/CountryVC.m; sourceTree = "<group>"; };
 		0080965F1894BB64000AC16A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		008096601894BB64000AC16A /* config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = config.m; sourceTree = "<group>"; };
+		00B398A718BF6B7E00B6A225 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
 		00E3B810184804FC009B351B /* Bucketify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bucketify.h; path = Classes/Bucketify.h; sourceTree = "<group>"; };
 		00E3B811184804FC009B351B /* Bucketify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bucketify.m; path = Classes/Bucketify.m; sourceTree = "<group>"; };
 		00E3B8141848D58B009B351B /* EchoNestTicket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EchoNestTicket.h; path = Classes/EchoNestTicket.h; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 		004481CE18257318007AD1F4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				00B398A718BF6B7E00B6A225 /* DefaultPreferences.plist */,
 				00503E6918439C4500890D64 /* ENAPILibrary */,
 				004481D618257318007AD1F4 /* AppDelegate.h */,
 				004481D718257318007AD1F4 /* AppDelegate.m */,
@@ -331,6 +334,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				004481E018257318007AD1F4 /* Images.xcassets in Resources */,
+				00B398A818BF6B7E00B6A225 /* DefaultPreferences.plist in Resources */,
 				004481D218257318007AD1F4 /* InfoPlist.strings in Resources */,
 				004481DB18257318007AD1F4 /* Main.storyboard in Resources */,
 			);

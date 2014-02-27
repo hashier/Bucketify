@@ -13,16 +13,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-
-    if ( ! [userDefaults stringForKey:kInPlaylist]) {
-        [userDefaults setObject:@"Starred" forKey:kInPlaylist];
-    }
-    if ( ! [userDefaults stringForKey:kOutPlaylist]) {
-        [userDefaults setObject:@"Starred_Filtered" forKey:kOutPlaylist];
-    }
-    [userDefaults synchronize];
-
+//    [userDefaults registerDefaults:@{kInPlaylist: @"Starred", kOutPlaylist: @"Starred_Filtered"}];
+    NSURL *defaultPrefsFile = [[NSBundle mainBundle] URLForResource:@"DefaultPreferences"
+                                                      withExtension:@"plist"];
+    NSDictionary *defaultPrefs = [NSDictionary dictionaryWithContentsOfURL:defaultPrefsFile];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:defaultPrefs];
+    
     return YES;
 }
 							
