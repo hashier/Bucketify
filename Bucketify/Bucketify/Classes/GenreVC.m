@@ -1,24 +1,27 @@
 //
-//  RandVC.m
+//  GenreVC.m
 //  Bucketify
 //
-//  Created by Christopher Loessl on 21/02/14.
+//  Created by Christopher Loessl on 02/03/14.
 //  Copyright (c) 2014 Christopher Loessl. All rights reserved.
 //
 
-#import "RandVC.h"
-#import "config.h"
-#import "Bucketify.h"
+#import "GenreVC.h"
 #import "common.h"
+#import "Bucketify.h"
+#import "config.h"
 
-@interface RandVC ()
+@interface GenreVC ()
 
-@property (strong, nonatomic) Bucketify *bucketify;
-@property (weak, nonatomic) IBOutlet UILabel *labelStatus;
+@property (nonatomic, strong) Bucketify *bucketify;
+@property (nonatomic, weak) IBOutlet UILabel *labelStatus;
+@property (nonatomic, weak) IBOutlet UITextField *textFieldGenre;
 
 @end
 
-@implementation RandVC
+@implementation GenreVC
+
+#pragma mark - Init
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -29,16 +32,29 @@
     return self;
 }
 
+#pragma mark - View
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 }
 
+#pragma mark - Memory
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    
+    DLog(@"Info: didReceiveMemoryWarning");
+}
+
+#pragma mark - UITextFieldDelegate
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
+    return YES;
 }
 
 #pragma mark - Action
@@ -58,7 +74,7 @@
                      forKeyPath:@"status"
                         options:0
                         context:nil];
-    [self.bucketify randomiseInPlaylist:inPlaylist toPlaylistName:outPlaylist];
+    [self.bucketify filterPlaylistName:inPlaylist byCountry:self.textFieldGenre.text toPlaylistName:outPlaylist];
 }
 
 #pragma mark - KVO/KVC

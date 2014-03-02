@@ -30,6 +30,7 @@
 		0068911018985FCC002C1915 /* NavigationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068910F18985FCC002C1915 /* NavigationViewController.m */; };
 		0068911218985FE3002C1915 /* CountryVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 0068911118985FE3002C1915 /* CountryVC.m */; };
 		008096611894BB64000AC16A /* config.m in Sources */ = {isa = PBXBuildFile; fileRef = 008096601894BB64000AC16A /* config.m */; };
+		00967CD618C38B7800F8812F /* GenreVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 00967CD518C38B7800F8812F /* GenreVC.m */; };
 		00B398A818BF6B7E00B6A225 /* DefaultPreferences.plist in Resources */ = {isa = PBXBuildFile; fileRef = 00B398A718BF6B7E00B6A225 /* DefaultPreferences.plist */; };
 		00E3B812184804FC009B351B /* Bucketify.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B811184804FC009B351B /* Bucketify.m */; };
 		00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E3B8151848D58B009B351B /* EchoNestTicket.m */; };
@@ -86,6 +87,8 @@
 		0068911118985FE3002C1915 /* CountryVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CountryVC.m; path = Classes/CountryVC.m; sourceTree = "<group>"; };
 		0080965F1894BB64000AC16A /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
 		008096601894BB64000AC16A /* config.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = config.m; sourceTree = "<group>"; };
+		00967CD418C38B7800F8812F /* GenreVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenreVC.h; path = Classes/GenreVC.h; sourceTree = "<group>"; };
+		00967CD518C38B7800F8812F /* GenreVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GenreVC.m; path = Classes/GenreVC.m; sourceTree = "<group>"; };
 		00B398A718BF6B7E00B6A225 /* DefaultPreferences.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = DefaultPreferences.plist; sourceTree = "<group>"; };
 		00E3B810184804FC009B351B /* Bucketify.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Bucketify.h; path = Classes/Bucketify.h; sourceTree = "<group>"; };
 		00E3B811184804FC009B351B /* Bucketify.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Bucketify.m; path = Classes/Bucketify.m; sourceTree = "<group>"; };
@@ -227,16 +230,18 @@
 		00BFB5B61842A45E00E354E1 /* VC */ = {
 			isa = PBXGroup;
 			children = (
-				0061A15818B6DB0F00D0F0A9 /* RandVC.h */,
-				0061A15918B6DB0F00D0F0A9 /* RandVC.m */,
-				0061A15B18B6DB1B00D0F0A9 /* CountVC.h */,
-				0061A15C18B6DB1B00D0F0A9 /* CountVC.m */,
 				0037F9C418A067C100DAA432 /* SelectViewController.h */,
 				0037F9C518A067C100DAA432 /* SelectViewController.m */,
 				0037F9C1189FE2BD00DAA432 /* SettingsViewController.h */,
 				0037F9C2189FE2BD00DAA432 /* SettingsViewController.m */,
 				0068910E18985FCC002C1915 /* NavigationViewController.h */,
 				0068910F18985FCC002C1915 /* NavigationViewController.m */,
+				00967CD418C38B7800F8812F /* GenreVC.h */,
+				00967CD518C38B7800F8812F /* GenreVC.m */,
+				0061A15818B6DB0F00D0F0A9 /* RandVC.h */,
+				0061A15918B6DB0F00D0F0A9 /* RandVC.m */,
+				0061A15B18B6DB1B00D0F0A9 /* CountVC.h */,
+				0061A15C18B6DB1B00D0F0A9 /* CountVC.m */,
 				004481DC18257318007AD1F4 /* CountryVC.h */,
 				0068911118985FE3002C1915 /* CountryVC.m */,
 			);
@@ -404,6 +409,7 @@
 			files = (
 				0037F9C618A067C100DAA432 /* SelectViewController.m in Sources */,
 				008096611894BB64000AC16A /* config.m in Sources */,
+				00967CD618C38B7800F8812F /* GenreVC.m in Sources */,
 				0061A15D18B6DB1B00D0F0A9 /* CountVC.m in Sources */,
 				00E3B8161848D58B009B351B /* EchoNestTicket.m in Sources */,
 				0068911018985FCC002C1915 /* NavigationViewController.m in Sources */,

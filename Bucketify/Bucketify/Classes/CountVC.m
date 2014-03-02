@@ -14,7 +14,6 @@
 @interface CountVC ()
 
 @property (strong, nonatomic) Bucketify *bucketify;
-@property (weak, nonatomic) IBOutlet UIButton *buttonGo;
 @property (weak, nonatomic) IBOutlet UILabel *labelStatus;
 
 @end
@@ -44,9 +43,10 @@
 
 #pragma mark - Action
 
-- (IBAction)buttonGo:(UIButton *)sender {
+- (IBAction)bucketifyButton:(UIButton *)sender {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    DLog(@"Button pressed (:");
+
+    NSString *inPlaylist = [userDefaults stringForKey:kInPlaylist];
 
     @try {
         [self.bucketify removeObserver:self forKeyPath:@"status"];
@@ -57,7 +57,7 @@
                      forKeyPath:@"status"
                         options:0
                         context:nil];
-    [self.bucketify countSongsInPlaylist:[userDefaults stringForKey:kInPlaylist]];
+    [self.bucketify countSongsInPlaylist:inPlaylist];
 }
 
 #pragma mark - KVO/KVC

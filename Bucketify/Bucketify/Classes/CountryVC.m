@@ -16,13 +16,24 @@
 
 @interface CountryVC ()
 
-@property (strong, nonatomic) Bucketify *bucketify;
-@property (weak, nonatomic) IBOutlet UILabel *labelStatus;
-@property (weak, nonatomic) IBOutlet UITextField *textFieldCountry;
+@property (nonatomic, strong) Bucketify *bucketify;
+@property (nonatomic, weak) IBOutlet UILabel *labelStatus;
+@property (nonatomic, weak) IBOutlet UITextField *textFieldCountry;
 
 @end
 
 @implementation CountryVC
+
+#pragma mark - Init
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        // Custom initialization
+    }
+    return self;
+}
 
 #pragma mark - View
 
@@ -53,10 +64,11 @@
 
 #pragma mark - Actions
 
-- (IBAction)doItButton:(id)sender
-{
+- (IBAction)bucketifyButton:(id)sender {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    DLog(@"Button pressed (:");
+
+    NSString *inPlaylist = [userDefaults stringForKey:kInPlaylist];
+    NSString *outPlaylist = [userDefaults stringForKey:kOutPlaylist];
 
     @try {
         [self.bucketify removeObserver:self forKeyPath:@"status"];
@@ -67,7 +79,7 @@
                      forKeyPath:@"status"
                         options:0
                         context:nil];
-    [self.bucketify filterPlaylistName:[userDefaults stringForKey:kInPlaylist] byCountry:self.textFieldCountry.text toPlaylistName:[userDefaults stringForKey:kOutPlaylist]];
+    [self.bucketify filterPlaylistName:inPlaylist byCountry:self.textFieldCountry.text toPlaylistName:outPlaylist];
 }
 
 #pragma mark - KVO/KVC
