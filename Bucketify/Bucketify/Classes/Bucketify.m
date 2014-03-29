@@ -61,6 +61,29 @@
     }];
 }
 
+- (void)filterPlaylistName:(NSString *)playlistName byGenre:(NSString *)genre toPlaylistName:(NSString *)toPlaylistName {
+    [self echoNestUseNewUserArtistTasteProfileWithCompletionBlock:^(NSString *userTasteProfileID) {
+        [self spotifyPlaylistName:playlistName toSPPlaylist:^(SPPlaylist *playlist) {
+            [self spotifyPlaylistName:toPlaylistName toSPPlaylist:^(SPPlaylist *toPlaylist) {
+                [self spotifyGetTracksFromPlaylist:playlist then:^(NSArray *tracks) {
+                    [self echoNestUpdateArtistUserTasteProfileID:userTasteProfileID withTracks:tracks then:^{
+                        NSDictionary *parameters = @{@"id": userTasteProfileID, @"bucket": @"artist_location", @"results": @"1000"};
+                        [self echoNestReadUserTasteProfileWithParameters:parameters then:^(NSDictionary *tasteProfileInformation) {
+                            [self echoNestFilterTracks:tracks byGenre:genre withTasteProfileInformation:tasteProfileInformation then:^(NSArray *filtered) {
+                                [self spotifyAddSongURLs:filtered toPlaylist:toPlaylist then:^{
+                                    [self echoNestDeleteUserTasteProfileID:userTasteProfileID then:^{
+                                        self.status = @"All done, check your filtered playlist in Spotify";
+                                    }];
+                                }];
+                            }];
+                        }];
+                    }];
+                }];
+            }];
+        }];
+    }];
+}
+
 - (void)countSongsInPlaylist:(NSString *)playlistName {
     [self spotifyPlaylistName:playlistName toSPPlaylist:^(SPPlaylist *playlist) {
         [self spotifyGetTracksFromPlaylist:playlist then:^(NSArray *tracks) {
@@ -312,6 +335,10 @@
     }
     DLog(@"We found %lu tracks after filtering, now add them.", NSUIntToLong([tracksToAddToSpotify count]));
     if (completionBlock) completionBlock(tracksToAddToSpotify);
+}
+
+- (void)echoNestFilterTracks:(NSArray *)tracks byGenre:(NSString *)genre withTasteProfileInformation:(NSDictionary *)tasteProfileInformation then:(void (^)(NSArray *filtered))completionBlock {
+    DLog(@"Implement me (:");
 }
 
 #pragma mark - Spotify

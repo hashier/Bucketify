@@ -74,7 +74,7 @@
                      forKeyPath:@"status"
                         options:0
                         context:nil];
-    [self.bucketify filterPlaylistName:inPlaylist byCountry:self.textFieldGenre.text toPlaylistName:outPlaylist];
+    [self.bucketify filterPlaylistName:inPlaylist byGenre:self.textFieldGenre.text toPlaylistName:outPlaylist];
 }
 
 #pragma mark - KVO/KVC
