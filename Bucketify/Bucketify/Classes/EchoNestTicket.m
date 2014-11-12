@@ -39,6 +39,8 @@
 
 - (void)updateTicket:(NSTimer *)timer
 {
+    DLog(@"self.userTickt: %@", self.userTicket);
+    
     NSDictionary *parameters = @{@"ticket": self.userTicket};
     
     NSLog(@"Update ticket request");
