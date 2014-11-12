@@ -221,7 +221,7 @@
             continue;
         }
         for (aArtist in anTrack.artists) {
-            aURL = [self spotifyString:[aArtist.spotifyURL absoluteString]];
+            aURL = [Bucketify spotifyString:[aArtist.spotifyURL absoluteString]];
             [allArtists addObject:@{@"item": @{@"item_id": [aURL stringByReplacingOccurrencesOfString:@":" withString:@""], @"artist_id": aURL}}];
         }
         j++;
@@ -327,7 +327,7 @@
     DLog(@"Tracks to check: %lu", NSUIntToLong([tracks count]));
     for (SPTrack *aTrack in tracks) {
         for (SPArtist *anArtist in aTrack.artists) {
-            if ([aSet containsObject:[self spotifyString:[anArtist.spotifyURL absoluteString]]]) {
+            if ([aSet containsObject:[anArtist.spotifyURL absoluteString]]) {
                 [tracksToAddToSpotify addObject:[aTrack.spotifyURL absoluteString]];
                 break;
             }
@@ -466,7 +466,7 @@
     return [[NSUserDefaults standardUserDefaults] valueForKey:@"SpotifyUsers"][@"LastUser"];
 }
 
-- (NSString *)spotifyString:(NSString *)string
++ (NSString *)spotifyString:(NSString *)string
 {
     return [string stringByReplacingOccurrencesOfString:@"spotify" withString:@"spotify-WW"];
 }
